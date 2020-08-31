@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../src/tools/macro.h
+
+/Users/zero/work/graphic/renderer/Luminous/Luminous/src/parser/scene_parser.cpp
+scene_parser.h
+/Users/zero/work/graphic/renderer/Luminous/Luminous/src/parser/scene_parser.h
+
+/Users/zero/work/graphic/renderer/Luminous/Luminous/src/parser/scene_parser.h
+fstream
+-
+tools/macro.h
+-
+
