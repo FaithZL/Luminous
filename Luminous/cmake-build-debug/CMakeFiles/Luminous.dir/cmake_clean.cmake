@@ -1,4 +1,5 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/Luminous.dir/src/kernel/samplers/Sampler.cpp.o"
   "CMakeFiles/Luminous.dir/src/main.cpp.o"
   "CMakeFiles/Luminous.dir/src/parser/scene_parser.cpp.o"
   "Luminous"

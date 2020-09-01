@@ -82,6 +82,15 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/Users/zero/work/graphic/renderer/Luminous/Luminous/src/kernel/CObject.h">
+			<Option target="Luminous"/>
+		</Unit>
+		<Unit filename="/Users/zero/work/graphic/renderer/Luminous/Luminous/src/kernel/samplers/Sampler.cpp">
+			<Option target="Luminous"/>
+		</Unit>
+		<Unit filename="/Users/zero/work/graphic/renderer/Luminous/Luminous/src/kernel/samplers/Sampler.h">
+			<Option target="Luminous"/>
+		</Unit>
 		<Unit filename="/Users/zero/work/graphic/renderer/Luminous/Luminous/src/main.cpp">
 			<Option target="Luminous"/>
 		</Unit>
@@ -89,6 +98,9 @@
 			<Option target="Luminous"/>
 		</Unit>
 		<Unit filename="/Users/zero/work/graphic/renderer/Luminous/Luminous/src/parser/scene_parser.h">
+			<Option target="Luminous"/>
+		</Unit>
+		<Unit filename="/Users/zero/work/graphic/renderer/Luminous/Luminous/src/tools/string_print.h">
 			<Option target="Luminous"/>
 		</Unit>
 		<Unit filename="/Users/zero/work/graphic/renderer/Luminous/Luminous/CMakeLists.txt">

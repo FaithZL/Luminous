@@ -143,6 +143,33 @@ Luminous/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Luminous.dir/build.make CMakeFiles/Luminous.dir/build
 .PHONY : Luminous/fast
 
+src/kernel/samplers/Sampler.o: src/kernel/samplers/Sampler.cpp.o
+
+.PHONY : src/kernel/samplers/Sampler.o
+
+# target to build an object file
+src/kernel/samplers/Sampler.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Luminous.dir/build.make CMakeFiles/Luminous.dir/src/kernel/samplers/Sampler.cpp.o
+.PHONY : src/kernel/samplers/Sampler.cpp.o
+
+src/kernel/samplers/Sampler.i: src/kernel/samplers/Sampler.cpp.i
+
+.PHONY : src/kernel/samplers/Sampler.i
+
+# target to preprocess a source file
+src/kernel/samplers/Sampler.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Luminous.dir/build.make CMakeFiles/Luminous.dir/src/kernel/samplers/Sampler.cpp.i
+.PHONY : src/kernel/samplers/Sampler.cpp.i
+
+src/kernel/samplers/Sampler.s: src/kernel/samplers/Sampler.cpp.s
+
+.PHONY : src/kernel/samplers/Sampler.s
+
+# target to generate assembly for a file
+src/kernel/samplers/Sampler.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Luminous.dir/build.make CMakeFiles/Luminous.dir/src/kernel/samplers/Sampler.cpp.s
+.PHONY : src/kernel/samplers/Sampler.cpp.s
+
 src/main.o: src/main.cpp.o
 
 .PHONY : src/main.o
@@ -206,6 +233,9 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... Luminous"
+	@echo "... src/kernel/samplers/Sampler.o"
+	@echo "... src/kernel/samplers/Sampler.i"
+	@echo "... src/kernel/samplers/Sampler.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
