@@ -6,7 +6,7 @@ set(APP_NAME Luminous)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(Luminous src/main.cpp src/parser/scene_parser.cpp src/kernel/samplers/Sampler.cpp src/kernel/samplers/Sampler.h src/kernel/CObject.h src/tools/string_print.h)
+add_executable(Luminous src/main.cpp src/parser/scene_parser.cpp src/core/samplers/Sampler.cpp src/core/samplers/Sampler.h src/core/CObject.h src/util/string_print.h src/util/sha1.cpp src/util/sha1.h)
 
 file(GLOB_RECURSE ALL_FILES "src/*.h*" "src/*.c*")
 foreach (_file IN ITEMS ${MORE_FILES})

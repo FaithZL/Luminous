@@ -6,7 +6,7 @@
 #define LUMINOUS_SCENE_PARSER_H
 
 #include <fstream>
-#include <tools/header.h>
+#include <util/header.h>
 
 LUMINOUS_BEGIN
 
