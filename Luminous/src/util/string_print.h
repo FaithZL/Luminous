@@ -2,8 +2,7 @@
 // Created by Zero on 2020/9/1.
 //
 
-#ifndef LUMINOUS_STRING_PRINT_H
-#define LUMINOUS_STRING_PRINT_H
+#pragma once
 
 inline void stringPrintfRecursive(std::string *s, const char *fmt) {
     const char *c = fmt;
@@ -127,4 +126,3 @@ inline std::string StringPrintf(const char *fmt, Args... args) {
 #pragma GCC diagnostic pop
 #endif  // __GNUG__
 
-#endif //LUMINOUS_STRING_PRINT_H

@@ -1,9 +1,7 @@
 //
 // Created by Zero on 2020/9/1.
 //
-
-#ifndef LUMINOUS_COBJECT_H
-#define LUMINOUS_COBJECT_H
+#pragma once
 
 #include "util/header.h"
 
@@ -27,5 +25,3 @@ inline namespace utility {
 
 LUMINOUS_END
 
-
-#endif //LUMINOUS_COBJECT_H

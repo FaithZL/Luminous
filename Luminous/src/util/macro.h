@@ -2,8 +2,7 @@
 // Created by Zero on 2020/8/31.
 //
 
-#ifndef LUMINOUS_MACRO_H
-#define LUMINOUS_MACRO_H
+#pragma once
 
 #define CONSTEXPR constexpr
 
@@ -11,4 +10,3 @@
 
 #define LUMINOUS_END };
 
-#endif //LUMINOUS_MACRO_H

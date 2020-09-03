@@ -2,8 +2,7 @@
 // Created by Zero on 2020/9/2.
 //
 
-#ifndef LUMINOUS_SHA1_H
-#define LUMINOUS_SHA1_H
+#pragma once
 
 #include <string>
 #include <string_view>
@@ -24,4 +23,3 @@ public:
     [[nodiscard]] auto digest() const noexcept { return _digest; }
 };
 
-#endif //LUMINOUS_SHA1_H
