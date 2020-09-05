@@ -280,15 +280,33 @@ MAKE_VECTOR_TYPE(float)
 #undef MAKE_VECTOR_MAKE_TYPE4
 
 // For boolN
-constexpr auto operator!(bool2 v) noexcept { return make_bool2(!v.x, !v.y); }
-constexpr auto operator!(bool3 v) noexcept { return make_bool3(!v.x, !v.y, !v.z); }
-constexpr auto operator!(bool4 v) noexcept { return make_bool4(!v.x, !v.y, !v.z, !v.w); }
-constexpr auto operator||(bool2 lhs, bool2 rhs) noexcept { return make_bool2(lhs.x || rhs.x, lhs.y || rhs.y); }
-constexpr auto operator||(bool3 lhs, bool3 rhs) noexcept { return make_bool3(lhs.x || rhs.x, lhs.y || rhs.y, lhs.z || rhs.z); }
-constexpr auto operator||(bool4 lhs, bool4 rhs) noexcept { return make_bool4(lhs.x || rhs.x, lhs.y || rhs.y, lhs.z || rhs.z, lhs.w || rhs.w); }
-constexpr auto operator&&(bool2 lhs, bool2 rhs) noexcept { return make_bool2(lhs.x && rhs.x, lhs.y && rhs.y); }
-constexpr auto operator&&(bool3 lhs, bool3 rhs) noexcept { return make_bool3(lhs.x && rhs.x, lhs.y && rhs.y, lhs.z && rhs.z); }
-constexpr auto operator&&(bool4 lhs, bool4 rhs) noexcept { return make_bool4(lhs.x && rhs.x, lhs.y && rhs.y, lhs.z && rhs.z, lhs.w && rhs.w); }
+constexpr auto operator!(bool2 v) noexcept {
+    return make_bool2(!v.x, !v.y);
+}
+constexpr auto operator!(bool3 v) noexcept {
+    return make_bool3(!v.x, !v.y, !v.z);
+}
+constexpr auto operator!(bool4 v) noexcept {
+    return make_bool4(!v.x, !v.y, !v.z, !v.w);
+}
+constexpr auto operator||(bool2 lhs, bool2 rhs) noexcept {
+    return make_bool2(lhs.x || rhs.x, lhs.y || rhs.y);
+}
+constexpr auto operator||(bool3 lhs, bool3 rhs) noexcept {
+    return make_bool3(lhs.x || rhs.x, lhs.y || rhs.y, lhs.z || rhs.z);
+}
+constexpr auto operator||(bool4 lhs, bool4 rhs) noexcept {
+    return make_bool4(lhs.x || rhs.x, lhs.y || rhs.y, lhs.z || rhs.z, lhs.w || rhs.w);
+}
+constexpr auto operator&&(bool2 lhs, bool2 rhs) noexcept {
+    return make_bool2(lhs.x && rhs.x, lhs.y && rhs.y);
+}
+constexpr auto operator&&(bool3 lhs, bool3 rhs) noexcept {
+    return make_bool3(lhs.x && rhs.x, lhs.y && rhs.y, lhs.z && rhs.z);
+}
+constexpr auto operator&&(bool4 lhs, bool4 rhs) noexcept {
+    return make_bool4(lhs.x && rhs.x, lhs.y && rhs.y, lhs.z && rhs.z, lhs.w && rhs.w);
+}
 
 constexpr bool any(bool2 v) noexcept { return v.x || v.y; }
 constexpr bool any(bool3 v) noexcept { return v.x || v.y || v.z; }
