@@ -339,6 +339,143 @@ MAKE_VECTOR_BINARY_FUNC(max)
 
 #undef MAKE_VECTOR_BINARY_FUNC
 
+template<typename T, typename F>
+constexpr auto select(bool pred, T t, F f) noexcept {
+    return pred ? t : f;
+}
+
+template<typename T, uint N>
+constexpr auto select(Vector<bool, N, false> pred, Vector<T, N, false> t, Vector<T, N, false> f) noexcept {
+    static_assert(N == 2 || N == 3 || N == 4);
+    if constexpr (N == 2) {
+        return Vector<T, N, false>{select(pred.x, t.x, f.x), select(pred.y, t.y, f.y)};
+    } else if constexpr (N == 3) {
+        return Vector<T, N, false>{select(pred.x, t.x, f.x), select(pred.y, t.y, f.y), select(pred.z, t.z, f.z)};
+    } else {
+        return Vector<T, N, false>{select(pred.x, t.x, f.x), select(pred.y, t.y, f.y), select(pred.z, t.z, f.z), select(pred.w, t.w, f.w)};
+    }
+}
+
+template<typename A, typename B>
+constexpr auto lerp(A a, B b, float t) noexcept {
+    return a + t * (b - a);
+}
+
+template<typename X, typename A, typename B>
+constexpr auto clamp(X x, A a, B b) noexcept {
+    return min(max(x, a), b);
+}
+
+// Vector Functions
+template<uint N>
+constexpr auto dot(Vector<float, N, false> u, Vector<float, N, false> v) noexcept {
+    static_assert(N == 2 || N == 3 || N == 4);
+    if constexpr (N == 2) {
+        return u.x * v.x + u.y * v.y;
+    } else if constexpr (N == 3) {
+        return u.x * v.x + u.y * v.y + u.z * v.z;
+    } else {
+        return u.x * v.x + u.y * v.y + u.z * v.z + u.w * v.w;
+    }
+}
+
+template<uint N>
+constexpr auto length(Vector<float, N, false> u) noexcept {
+    return sqrt(dot(u, u));
+}
+
+template<uint N>
+constexpr auto normalize(Vector<float, N, false> u) noexcept {
+    return u * (1.0f / length(u));
+}
+
+template<uint N>
+constexpr auto distance(Vector<float, N, false> u, Vector<float, N, false> v) noexcept {
+    return length(u - v);
+}
+
+constexpr auto cross(float3 u, float3 v) noexcept {
+    return make_float3(u.y * v.z - v.y * u.z,
+                       u.z * v.x - v.z * u.x,
+                       u.x * v.y - v.x * u.y);
+}
+
+// Matrix Functions
+constexpr auto transpose(float3x3 m) noexcept {
+    return make_float3x3(m[0].x, m[1].x, m[2].x,
+                         m[0].y, m[1].y, m[2].y,
+                         m[0].z, m[1].z, m[2].z);
+}
+
+constexpr auto transpose(float4x4 m) noexcept {
+    return make_float4x4(m[0].x, m[1].x, m[2].x, m[3].x,
+                         m[0].y, m[1].y, m[2].y, m[3].y,
+                         m[0].z, m[1].z, m[2].z, m[3].z,
+                         m[0].w, m[1].w, m[2].w, m[3].w);
+}
+
+constexpr auto inverse(float3x3 m) noexcept {// from GLM
+    auto one_over_determinant = 1.0f / (m[0].x * (m[1].y * m[2].z - m[2].y * m[1].z) - m[1].x * (m[0].y * m[2].z - m[2].y * m[0].z) + m[2].x * (m[0].y * m[1].z - m[1].y * m[0].z));
+    return make_float3x3(
+            (m[1].y * m[2].z - m[2].y * m[1].z) * one_over_determinant,
+            (m[2].y * m[0].z - m[0].y * m[2].z) * one_over_determinant,
+            (m[0].y * m[1].z - m[1].y * m[0].z) * one_over_determinant,
+            (m[2].x * m[1].z - m[1].x * m[2].z) * one_over_determinant,
+            (m[0].x * m[2].z - m[2].x * m[0].z) * one_over_determinant,
+            (m[1].x * m[0].z - m[0].x * m[1].z) * one_over_determinant,
+            (m[1].x * m[2].y - m[2].x * m[1].y) * one_over_determinant,
+            (m[2].x * m[0].y - m[0].x * m[2].y) * one_over_determinant,
+            (m[0].x * m[1].y - m[1].x * m[0].y) * one_over_determinant);
+}
+
+constexpr auto inverse(float4x4 m) noexcept {// from GLM
+    auto coef00 = m[2].z * m[3].w - m[3].z * m[2].w;
+    auto coef02 = m[1].z * m[3].w - m[3].z * m[1].w;
+    auto coef03 = m[1].z * m[2].w - m[2].z * m[1].w;
+    auto coef04 = m[2].y * m[3].w - m[3].y * m[2].w;
+    auto coef06 = m[1].y * m[3].w - m[3].y * m[1].w;
+    auto coef07 = m[1].y * m[2].w - m[2].y * m[1].w;
+    auto coef08 = m[2].y * m[3].z - m[3].y * m[2].z;
+    auto coef10 = m[1].y * m[3].z - m[3].y * m[1].z;
+    auto coef11 = m[1].y * m[2].z - m[2].y * m[1].z;
+    auto coef12 = m[2].x * m[3].w - m[3].x * m[2].w;
+    auto coef14 = m[1].x * m[3].w - m[3].x * m[1].w;
+    auto coef15 = m[1].x * m[2].w - m[2].x * m[1].w;
+    auto coef16 = m[2].x * m[3].z - m[3].x * m[2].z;
+    auto coef18 = m[1].x * m[3].z - m[3].x * m[1].z;
+    auto coef19 = m[1].x * m[2].z - m[2].x * m[1].z;
+    auto coef20 = m[2].x * m[3].y - m[3].x * m[2].y;
+    auto coef22 = m[1].x * m[3].y - m[3].x * m[1].y;
+    auto coef23 = m[1].x * m[2].y - m[2].x * m[1].y;
+    auto fac0 = float4(coef00, coef00, coef02, coef03);
+    auto fac1 = float4(coef04, coef04, coef06, coef07);
+    auto fac2 = float4(coef08, coef08, coef10, coef11);
+    auto fac3 = float4(coef12, coef12, coef14, coef15);
+    auto fac4 = float4(coef16, coef16, coef18, coef19);
+    auto fac5 = float4(coef20, coef20, coef22, coef23);
+    auto Vec0 = float4(m[1].x, m[0].x, m[0].x, m[0].x);
+    auto Vec1 = float4(m[1].y, m[0].y, m[0].y, m[0].y);
+    auto Vec2 = float4(m[1].z, m[0].z, m[0].z, m[0].z);
+    auto Vec3 = float4(m[1].w, m[0].w, m[0].w, m[0].w);
+    auto inv0 = Vec1 * fac0 - Vec2 * fac1 + Vec3 * fac2;
+    auto inv1 = Vec0 * fac0 - Vec2 * fac3 + Vec3 * fac4;
+    auto inv2 = Vec0 * fac1 - Vec1 * fac3 + Vec3 * fac5;
+    auto inv3 = Vec0 * fac2 - Vec1 * fac4 + Vec2 * fac5;
+    auto sign_a = float4(+1, -1, +1, -1);
+    auto sign_b = float4(-1, +1, -1, +1);
+    auto inv_0 = inv0 * sign_a;
+    auto inv_1 = inv1 * sign_b;
+    auto inv_2 = inv2 * sign_a;
+    auto inv_3 = inv3 * sign_b;
+    auto dot0 = m[0] * float4(inv_0.x, inv_1.x, inv_2.x, inv_3.x);
+    auto dot1 = dot0.x + dot0.y + dot0.z + dot0.w;
+    auto one_over_determinant = 1.0f / dot1;
+    return make_float4x4(inv_0 * one_over_determinant,
+                         inv_1 * one_over_determinant,
+                         inv_2 * one_over_determinant,
+                         inv_3 * one_over_determinant);
+}
+
 } // math
 
 } // luminous
