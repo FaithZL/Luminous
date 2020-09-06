@@ -3,6 +3,7 @@
 #include "math/data_types.h"
 
 #include "math/math_util.h"
+#include "compute/type_desc.h"
 
 using namespace std;
 

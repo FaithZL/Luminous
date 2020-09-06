@@ -6,11 +6,31 @@ set(APP_NAME Luminous)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(Luminous src/main.cpp src/parser/scene_parser.cpp src/core/samplers/sampler.cpp src/core/samplers/sampler.h src/core/CObject.h src/util/string_print.h src/util/sha1.cpp src/util/sha1.h src/math/data_types.h src/math/scalar_types.h src/math/vector_types.h src/math/matrix_types.h src/math/math_util.h src/backends/cpu/cpu_device.cpp src/backends/cpu/cpu_device.h src/backends/cuda/cuda_device.cpp src/backends/metal/metal_device.mm src/compute/device.cpp src/compute/device.h src/util/plugin.h src/util/platform.h)
+include_directories("${PROJECT_SOURCE_DIR}/src")
 
 file(GLOB_RECURSE ALL_FILES "src/*.h*" "src/*.c*")
-foreach (_file IN ITEMS ${MORE_FILES})
-    list(APPEND ALL_FILES ${_file})
+
+# 定义按目录结构归类的方法
+function(assign_source_group)
+    foreach (_source IN ITEMS ${ARGN})
+        if (IS_ABSOLUTE "${_source}")
+            file(RELATIVE_PATH _source_rel "${CMAKE_CURRENT_SOURCE_DIR}" "${_source}")
+        else ()
+            set(_source_rel "${_source}")
+        endif ()
+        get_filename_component(_source_path "${_source_rel}" PATH)
+        string(REPLACE "/" "\\" _source_path_msvc "${_source_path}")
+        source_group("${_source_path_msvc}" FILES "${_source}")
+    endforeach ()
+endfunction(assign_source_group)
+
+foreach (_source IN ITEMS ${ALL_FILES})
+    assign_source_group(${_source})
 endforeach ()
 
-include_directories("${PROJECT_SOURCE_DIR}/src")
+
+message("${ALL_FILES}")
+
+add_executable(${APP_NAME} ${ALL_FILES})
+
+
