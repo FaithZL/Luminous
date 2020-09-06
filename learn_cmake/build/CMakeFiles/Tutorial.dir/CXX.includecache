@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/zero/work/graphic/renderer/Luminous/learn_cmake/tutorial.cpp
+stdio.h
+-
+stdlib.h
+-
+math.h
+-
+TutorialConfig.h
+/Users/zero/work/graphic/renderer/Luminous/learn_cmake/TutorialConfig.h
+
+TutorialConfig.h
+
