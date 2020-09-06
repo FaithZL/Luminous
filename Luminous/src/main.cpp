@@ -11,7 +11,6 @@ using namespace luminous;
 int main() {
     std::cout << "Hello, World!" << std::endl;
 
-    auto m = make_float4x4();
 
 
 
