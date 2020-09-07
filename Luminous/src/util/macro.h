@@ -47,9 +47,11 @@
 #define LUMINOUS_MAP_LIST2(f, x, peek, ...)   f(x) LUMINOUS_MAP_DEFER ( LUMINOUS_MAP_NEXT(peek, LUMINOUS_MAP_LIST1) ) ( f, peek, __VA_ARGS__ )
 
 // Applies the function macro `f` to each of the remaining parameters.
+
 #define LUMINOUS_MAP(f, ...) LUMINOUS_MAP_EVAL(LUMINOUS_MAP1(f, __VA_ARGS__, ()()(), ()()(), ()()(), 0))
 
 // Applies the function macro `f` to each of the remaining parameters and inserts commas between the results.
+
 #define LUMINOUS_MAP_LIST(f, ...) LUMINOUS_MAP_EVAL(LUMINOUS_MAP_LIST2(f, __VA_ARGS__, ()()(), ()()(), ()()(), 0))
 
 

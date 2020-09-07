@@ -1,3 +1,6 @@
 Luminous/cmake-build-debug
-build
+Luminous/cmake-build-relwithdebinfo
+Luminous/cmake-build-minsizerel
+Luminous/cmake-build-release
+Build
 xcode
