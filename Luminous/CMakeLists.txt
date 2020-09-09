@@ -25,6 +25,7 @@ function(assign_source_group)
 endfunction(assign_source_group)
 
 foreach (_source IN ITEMS ${ALL_FILES})
+#    message(${_source})
     assign_source_group(${_source})
 endforeach ()
 
