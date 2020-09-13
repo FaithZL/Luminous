@@ -1,5 +1,5 @@
 [submodule "Luminous/src/ext/spdlog"]
-	path = Luminous/src/ext/spdlog
+	path = Luminous/thirdparty/spdlog
 	url = https://github.com/gabime/spdlog.git
 [submodule "Luminous/src/ext/stb"]
 	path = Luminous/src/ext/stb
