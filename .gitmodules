@@ -7,6 +7,3 @@
 [submodule "Luminous/src/ext/cxxopts"]
 	path = Luminous/src/ext/cxxopts
 	url = https://github.com/jarro2783/cxxopts.git
-[submodule "Luminous/src/ext/embree"]
-	path = Luminous/src/ext/embree
-	url = https://github.com/embree/embree.git
