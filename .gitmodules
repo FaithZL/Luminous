@@ -10,6 +10,3 @@
 [submodule "Luminous/src/ext/embree"]
 	path = Luminous/src/ext/embree
 	url = https://github.com/embree/embree.git
-[submodule "Luminous/src/ext/oidn"]
-	path = Luminous/src/ext/oidn
-	url = https://github.com/OpenImageDenoise/oidn.git
