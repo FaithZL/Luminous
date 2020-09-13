@@ -4,6 +4,3 @@
 [submodule "Luminous/src/ext/stb"]
 	path = Luminous/src/ext/stb
 	url = https://github.com/nothings/stb.git
-[submodule "Luminous/src/ext/cxxopts"]
-	path = Luminous/src/ext/cxxopts
-	url = https://github.com/jarro2783/cxxopts.git
