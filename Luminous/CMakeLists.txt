@@ -7,6 +7,7 @@ set(APP_NAME Luminous)
 set(CMAKE_CXX_STANDARD 17)
 
 include_directories("${PROJECT_SOURCE_DIR}/src")
+include_directories("${PROJECT_SOURCE_DIR}/src/ext/stblib/stb")
 
 file(GLOB_RECURSE ALL_FILES "src/*.h*" "src/*.c*")
 
@@ -25,12 +26,9 @@ function(assign_source_group)
 endfunction(assign_source_group)
 
 foreach (_source IN ITEMS ${ALL_FILES})
-#    message(${_source})
     assign_source_group(${_source})
+#    message(${_source})
 endforeach ()
-
-
-message("${ALL_FILES}")
 
 add_executable(${APP_NAME} ${ALL_FILES})
 
