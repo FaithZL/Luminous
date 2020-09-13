@@ -1,7 +1,7 @@
-#define STB_DEFINE 
+#define STB_DEFINE
 #include "stb/stb.h"
 
-#define STB_C_LEXER_IMPLEMENTATION 
+#define STB_C_LEXER_IMPLEMENTATION
 #include "stb/stb_c_lexer.h"
 
 #define STB_CONNECTED_COMPONENTS_IMPLEMENTATION
@@ -42,7 +42,8 @@
 #define STB_PERLIN_IMPLEMENTATION
 #include "stb/stb_perlin.h"
 
-//#include "stb/stb_rect_pack.h"
+#define STB_INCLUDE_STB_RECT_PACK_H
+#include "stb/stb_rect_pack.h"
 
 #include "stb/stb_sprintf.h"
 
