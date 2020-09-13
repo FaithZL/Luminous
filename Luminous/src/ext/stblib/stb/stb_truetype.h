@@ -3798,7 +3798,7 @@ STBTT_DEF int stbtt_PackBegin(stbtt_pack_context *spc, unsigned char *pixels, in
    spc->v_oversample = 1;
    spc->skip_missing = 0;
 
-//   stbrp_init_target(context, pw-padding, ph-padding, nodes, num_nodes);
+   stbrp_init_target(context, pw-padding, ph-padding, nodes, num_nodes);
 
    if (pixels)
       STBTT_memset(pixels, 0, pw*ph); // background of 0 around pixels
@@ -4116,7 +4116,7 @@ STBTT_DEF int stbtt_PackFontRangesRenderIntoRects(stbtt_pack_context *spc, const
 
 STBTT_DEF void stbtt_PackFontRangesPackRects(stbtt_pack_context *spc, stbrp_rect *rects, int num_rects)
 {
-//   stbrp_pack_rects((stbrp_context *) spc->pack_info, rects, num_rects);
+   stbrp_pack_rects((stbrp_context *) spc->pack_info, rects, num_rects);
 }
 
 STBTT_DEF int stbtt_PackFontRanges(stbtt_pack_context *spc, const unsigned char *fontdata, int font_index, stbtt_pack_range *ranges, int num_ranges)

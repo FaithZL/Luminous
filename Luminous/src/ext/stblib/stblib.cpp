@@ -42,7 +42,7 @@
 #define STB_PERLIN_IMPLEMENTATION
 #include "stb/stb_perlin.h"
 
-#include "stb/stb_rect_pack.h"
+//#include "stb/stb_rect_pack.h"
 
 #include "stb/stb_sprintf.h"
 
