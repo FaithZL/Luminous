@@ -27,9 +27,12 @@ endfunction(assign_source_group)
 
 foreach (_source IN ITEMS ${ALL_FILES})
     assign_source_group(${_source})
-#    message(${_source})
 endforeach ()
+add_subdirectory(thirdparty/spdlog)
 
-add_executable(${APP_NAME} ${ALL_FILES})
+include_directories("${PROJECT_SOURCE_DIR}/thirdparty/spdlog/include")
+
+add_executable(${APP_NAME} ${ALL_FILES} src/util/logging.cpp)
+
 
 
