@@ -3,3 +3,6 @@
 //
 
 #pragma once
+
+#include <variant>
+#include <compute/type_desc.h>

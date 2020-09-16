@@ -22,7 +22,9 @@ struct float3x3 {
     }
 
     constexpr float3x3(float3 c0, float3 c1, float3 c2) noexcept
-            : cols{c0, c1, c2} {}
+            : cols{c0, c1, c2} {
+
+    }
 
     constexpr float3x3(float m00, float m01, float m02,
                        float m10, float m11, float m12,
@@ -52,14 +54,10 @@ struct float4x4 {
             : cols{make_float4(s, 0.0f, 0.0f, 0.0f),
                    make_float4(0.0f, s, 0.0f, 0.0f),
                    make_float4(0.0f, 0.0f, s, 0.0f),
-                   make_float4(0.0f, 0.0f, 0.0f, s)} {
-
-    }
+                   make_float4(0.0f, 0.0f, 0.0f, s)} {}
 
     constexpr float4x4(float4 c0, float4 c1, float4 c2, float4 c3) noexcept
-            : cols{c0, c1, c2, c3} {
-
-    }
+            : cols{c0, c1, c2, c3} {}
 
     constexpr float4x4(float m00, float m01, float m02, float m03,
                        float m10, float m11, float m12, float m13,
@@ -68,9 +66,7 @@ struct float4x4 {
             : cols{make_float4(m00, m01, m02, m03),
                    make_float4(m10, m11, m12, m13),
                    make_float4(m20, m21, m22, m23),
-                   make_float4(m30, m31, m32, m33)} {
-
-    }
+                   make_float4(m30, m31, m32, m33)} {}
 
     template<typename Index>
     [[nodiscard]] float4 &operator[](Index i) noexcept {
@@ -83,7 +79,7 @@ struct float4x4 {
     }
 };
 
-[[nodiscard]] float3x3 make_float3x3(float val = 1.0f) noexcept {
+[[nodiscard]] constexpr auto make_float3x3(float val = 1.0f) noexcept {
     return float3x3{val};
 }
 

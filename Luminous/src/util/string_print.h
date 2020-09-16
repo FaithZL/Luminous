@@ -55,7 +55,7 @@ inline std::string text_file_contents(const std::filesystem::path &file_path) {
 
 #import <Foundation/Foundation.h>
 
-namespace luisa { inline namespace utility {
+namespace luminous { inline namespace utility {
 
 [[nodiscard]] inline NSString *make_objc_string(const char *s) noexcept {
     return [[NSString alloc] initWithCString:s encoding:NSUTF8StringEncoding];

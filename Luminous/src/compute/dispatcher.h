@@ -40,13 +40,19 @@ public:
     virtual void wait() = 0;
 
     template<typename Callback, std::enable_if_t<std::is_invocable_v<Callback>, int> = 0>
-    void when_completed(Callback &&f) noexcept {
-        _callbacks.emplace_back(std::forward<Callback>(f));
-    }
+    void when_completed(Callback &&f) noexcept { _callbacks.emplace_back(std::forward<Callback>(f)); }
 
     template<typename F, std::enable_if_t<std::is_invocable_v<F, Dispatcher &>, int> = 0>
     void operator()(F &&f) {
         f(*this);
+        _on_dispatch();
+    }
+
+    template<typename F, typename CB,
+            std::enable_if_t<std::conjunction_v<std::is_invocable<F, Dispatcher &>, std::is_invocable<CB>>, int> = 0>
+    void operator()(F &&f, CB &&callback) {
+        f(*this);
+        when_completed(std::forward<CB>(callback));
         _on_dispatch();
     }
 };
