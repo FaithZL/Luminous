@@ -5,6 +5,7 @@
 #include "math/math_util.h"
 #include "compute/type_desc.h"
 #include "util/logging.h"
+#include "compute/buffer.h"
 
 using namespace std;
 
