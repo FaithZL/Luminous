@@ -7,7 +7,7 @@
 #include <type_traits>
 
 #include <math/math_util.h>
-//#include <core/atomic_util.h>
+#include <util/atomic_util.h>
 #include <compute/variable.h>
 #include <compute/function.h>
 #include <compute/expression.h>
@@ -349,21 +349,21 @@ namespace luminous::compute::dsl {
 #define MAP_ARGUMENT_TO_VARIABLE(arg) expr_##arg.variable()
 
 #define MAKE_BUILTIN_FUNCTION_DEF(func, true_func, ...)                                                           \
-template<LUISA_MAP_LIST(MAP_ARGUMENT_TO_TEMPLATE_ARGUMENT, __VA_ARGS__)>                                          \
-inline auto func(LUISA_MAP_LIST(MAP_ARGUMENT_TO_ARGUMENT, __VA_ARGS__)) noexcept {                                \
-    LUISA_MAP(MAP_ARGUMENT_TO_EXPR, __VA_ARGS__)                                                                  \
-    LUISA_MAP(MAP_ARGUMENT_TO_TRUE_TYPE, __VA_ARGS__)                                                             \
-    using R = std::decay_t<decltype(true_func(LUISA_MAP_LIST(MAP_ARGUMENT_TO_TRUE_TYPE_DECLVAL, __VA_ARGS__)))>;  \
+template<LUMINOUS_MAP_LIST(MAP_ARGUMENT_TO_TEMPLATE_ARGUMENT, __VA_ARGS__)>                                          \
+inline auto func(LUMINOUS_MAP_LIST(MAP_ARGUMENT_TO_ARGUMENT, __VA_ARGS__)) noexcept {                                \
+    LUMINOUS_MAP(MAP_ARGUMENT_TO_EXPR, __VA_ARGS__)                                                                  \
+    LUMINOUS_MAP(MAP_ARGUMENT_TO_TRUE_TYPE, __VA_ARGS__)                                                             \
+    using R = std::decay_t<decltype(true_func(LUMINOUS_MAP_LIST(MAP_ARGUMENT_TO_TRUE_TYPE_DECLVAL, __VA_ARGS__)))>;  \
     return Expr<R>{Variable::make_temporary(type_desc<R>, std::make_unique<CallExpr>(                             \
-        #func, std::vector<const Variable *>{LUISA_MAP_LIST(MAP_ARGUMENT_TO_VARIABLE, __VA_ARGS__)}))};           \
+        #func, std::vector<const Variable *>{LUMINOUS_MAP_LIST(MAP_ARGUMENT_TO_VARIABLE, __VA_ARGS__)}))};           \
 }
 
 #define MAKE_BUILTIN_VOID_FUNCTION_DEF(func, ...)                                                                 \
-template<LUISA_MAP_LIST(MAP_ARGUMENT_TO_TEMPLATE_ARGUMENT, __VA_ARGS__)>                                          \
-inline void func(LUISA_MAP_LIST(MAP_ARGUMENT_TO_ARGUMENT, __VA_ARGS__)) noexcept {                                \
-    LUISA_MAP(MAP_ARGUMENT_TO_EXPR, __VA_ARGS__)                                                                  \
+template<LUMINOUS_MAP_LIST(MAP_ARGUMENT_TO_TEMPLATE_ARGUMENT, __VA_ARGS__)>                                          \
+inline void func(LUMINOUS_MAP_LIST(MAP_ARGUMENT_TO_ARGUMENT, __VA_ARGS__)) noexcept {                                \
+    LUMINOUS_MAP(MAP_ARGUMENT_TO_EXPR, __VA_ARGS__)                                                                  \
     Function::current().add_statement(std::make_unique<ExprStmt>(std::make_unique<CallExpr>(                      \
-        #func, std::vector<const Variable *>{LUISA_MAP_LIST(MAP_ARGUMENT_TO_VARIABLE, __VA_ARGS__)})));           \
+        #func, std::vector<const Variable *>{LUMINOUS_MAP_LIST(MAP_ARGUMENT_TO_VARIABLE, __VA_ARGS__)})));           \
 }
 
 #define MAKE_BUILTIN_VOID_FUNCTION_VOID_DEF(func)                                                                 \
@@ -495,7 +495,7 @@ template<typename T>
 
 }
 
-#define LUISA_STRUCT_BEGIN(S)                                                                    \
+#define LUMINOUS_STRUCT_BEGIN(S)                                                                    \
 namespace luminous::compute::dsl {                                                                  \
     template<>                                                                                   \
     struct Structure<S> {                                                                        \
@@ -508,42 +508,42 @@ namespace luminous::compute::dsl {                                              
                 td.member_names.clear();                                                         \
                 td.member_types.clear();                                                         \
 
-#define LUISA_STRUCT_MEMBER(member)                                                              \
+#define LUMINOUS_STRUCT_MEMBER(member)                                                              \
                 td.member_names.emplace_back(#member);                                           \
                 td.member_types.emplace_back(type_desc<decltype(std::declval<This>().member)>);  \
 
-#define LUISA_STRUCT_END()                                                                       \
+#define LUMINOUS_STRUCT_END()                                                                       \
             });                                                                                  \
             return &td;                                                                          \
         }                                                                                        \
     };                                                                                           \
 }                                                                                                \
 
-#define LUISA_STRUCT_MAP_MEMBER_NAME_TO_EXPR(name)                                                                     \
+#define LUMINOUS_STRUCT_MAP_MEMBER_NAME_TO_EXPR(name)                                                                     \
     [[nodiscard]] auto name() const noexcept {                                                                         \
         using R = std::decay_t<decltype(std::declval<Type>().name)>;                                                   \
         return Expr<R>{Variable::make_temporary(type_desc<R>, std::make_unique<MemberExpr>(this->_variable, #name))};  \
     }
 
-#define LUISA_STRUCT_SPECIALIZE_EXPR(S, ...)                            \
+#define LUMINOUS_STRUCT_SPECIALIZE_EXPR(S, ...)                            \
 namespace luminous::compute::dsl {                                         \
 template<> struct Expr<S> : public ExprBase {                           \
     using Type = S;                                                     \
     explicit Expr(const Variable *v) noexcept : ExprBase{v} {}          \
     Expr(ExprBase &&expr) noexcept : ExprBase{expr.variable()} {}       \
     Expr(const ExprBase &expr) noexcept : ExprBase{expr.variable()} {}  \
-    LUISA_MAP(LUISA_STRUCT_MAP_MEMBER_NAME_TO_EXPR, __VA_ARGS__)        \
+    LUMINOUS_MAP(LUMINOUS_STRUCT_MAP_MEMBER_NAME_TO_EXPR, __VA_ARGS__)        \
 };                                                                      \
 }
 
-#define LUISA_STRUCT(S, ...)                            \
-LUISA_STRUCT_BEGIN(S)                                   \
-     LUISA_MAP(LUISA_STRUCT_MEMBER, __VA_ARGS__)        \
-LUISA_STRUCT_END()                                      \
-LUISA_STRUCT_SPECIALIZE_EXPR(S, __VA_ARGS__)
+#define LUMINOUS_STRUCT(S, ...)                            \
+LUMINOUS_STRUCT_BEGIN(S)                                   \
+     LUMINOUS_MAP(LUMINOUS_STRUCT_MEMBER, __VA_ARGS__)        \
+LUMINOUS_STRUCT_END()                                      \
+LUMINOUS_STRUCT_SPECIALIZE_EXPR(S, __VA_ARGS__)
 
 // Let's define some syntax sugars...
-#ifndef LUISA_DISABLE_DSL_SYNTAX_SUGARS
+#ifndef LUMINOUS_DISABLE_DSL_SYNTAX_SUGARS
 
 namespace luminous::compute::dsl {
 

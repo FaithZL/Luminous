@@ -101,5 +101,93 @@ public:
 };
 
 
+    class TextureView {
+
+    private:
+        std::shared_ptr<Texture> _texture{nullptr};
+
+    public:
+        TextureView() noexcept = default;
+        explicit TextureView(std::shared_ptr<Texture> texture) noexcept: _texture{std::move(texture)} {}
+        [[nodiscard]] Texture *texture() const noexcept { return _texture.get(); }
+
+        [[nodiscard]] auto copy_from(const void *data) { return [texture = _texture, data](Dispatcher &d) { texture->copy_from(d, data); }; }
+        [[nodiscard]] auto copy_to(void *data) const { return [texture = _texture, data](Dispatcher &d) { texture->copy_to(d, data); }; }
+
+        template<typename T>
+        [[nodiscard]] auto copy_from(const BufferView<T> &bv) {
+            LUISA_WARNING_IF_NOT(pixel_format<T> == _texture->format(), "Texture pixel format and buffer type mismatch.");
+            return [texture = _texture, buffer = bv.buffer()->shared_from_this(), offset = bv.byte_offset()](Dispatcher &d) {
+                texture->copy_from(d, buffer.get(), offset);
+            };
+        }
+
+        template<typename T>
+        [[nodiscard]] auto copy_to(BufferView<T> &bv) const {
+            LUISA_WARNING_IF_NOT(pixel_format<T> == _texture->format(), "Texture pixel format and buffer type mismatch.");
+            return [texture = _texture, buffer = bv.buffer()->shared_from_this(), offset = bv.byte_offset()](Dispatcher &d) {
+                texture->copy_to(d, buffer.get(), offset);
+            };
+        }
+
+        [[nodiscard]] auto copy_to(TextureView &tv) const {
+            return [texture = _texture, other = tv.texture()->shared_from_this()](Dispatcher &d) {
+                texture->copy_to(d, other.get());
+            };
+        }
+
+        [[nodiscard]] uint32_t width() const noexcept { return _texture->width(); }
+        [[nodiscard]] uint32_t height() const noexcept { return _texture->height(); }
+        [[nodiscard]] PixelFormat format() const noexcept { return _texture->format(); }
+
+        void clear_cache() { _texture->clear_cache(); }
+
+        [[nodiscard]] uint32_t channels() const noexcept { return _texture->channels(); }
+        [[nodiscard]] uint32_t pixel_byte_size() const noexcept { return _texture->pixel_byte_size(); }
+        [[nodiscard]] uint32_t pitch_byte_size() const noexcept { return _texture->pitch_byte_size(); }
+        [[nodiscard]] uint32_t byte_size() const noexcept { return _texture->byte_size(); }
+        [[nodiscard]] uint32_t pixel_count() const noexcept { return _texture->pixel_count(); }
+
+        // For DSL
+        template<typename UV>
+        [[nodiscard]] auto read(UV &&uv) const noexcept {
+            using namespace luminous::compute::dsl;
+            Expr uv_expr{std::forward<UV>(uv)};
+            auto tex = Variable::make_texture_argument(_texture);
+            Function::current().mark_texture_read(_texture.get());
+            return Expr<float4>{Variable::make_temporary(nullptr, std::make_unique<TextureExpr>(TextureOp::READ, tex, uv_expr.variable()))};
+        }
+
+        template<typename UV>
+        [[nodiscard]] auto sample(UV &&uv) const noexcept {
+            using namespace luminous::compute::dsl;
+            Expr uv_expr{std::forward<UV>(uv)};
+            auto tex = Variable::make_texture_argument(_texture);
+            Function::current().mark_texture_sample(_texture.get());
+            return Expr<float4>{Variable::make_temporary(nullptr, std::make_unique<TextureExpr>(TextureOp::SAMPLE, tex, uv_expr.variable()))};
+        }
+
+        [[nodiscard]] auto save(std::filesystem::path path) const {
+            return [texture = _texture, path = std::move(path)](Dispatcher &d) { texture->save(d, path); };
+        }
+
+        template<typename UV, typename Value>
+        void write(UV &&uv, Value &&value) noexcept {
+            using namespace luminous::compute::dsl;
+            Expr uv_expr{std::forward<UV>(uv)};
+            Expr value_expr{std::forward<Value>(value)};
+            auto tex = Variable::make_texture_argument(_texture);
+            Function::current().mark_texture_write(_texture.get());
+            Function::current().add_statement(std::make_unique<ExprStmt>(std::make_unique<TextureExpr>(TextureOp::WRITE, tex, uv_expr.variable(), value_expr.variable())));
+        }
+
+        [[nodiscard]] bool empty() const noexcept { return _texture == nullptr; }
+        [[nodiscard]] bool is_hdr() const noexcept { return _texture->is_hdr(); }
+    };
+
+    [[nodiscard]] inline TextureView Texture::view() noexcept {
+        return TextureView{shared_from_this()};
+    }
+
 
 }

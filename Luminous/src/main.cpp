@@ -6,6 +6,7 @@
 #include "compute/type_desc.h"
 #include "util/logging.h"
 #include "compute/buffer.h"
+#include "compute/dsl.h"
 
 using namespace std;
 
