@@ -34,6 +34,7 @@ namespace luminous::compute::dsl {
 
     protected:
         int32_t _indent{0};
+
         bool _after_else{false};
 
         virtual void _emit_indent();

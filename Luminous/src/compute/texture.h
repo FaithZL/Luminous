@@ -115,7 +115,7 @@ public:
 
         template<typename T>
         [[nodiscard]] auto copy_from(const BufferView<T> &bv) {
-            LUISA_WARNING_IF_NOT(pixel_format<T> == _texture->format(), "Texture pixel format and buffer type mismatch.");
+            LUMINOUS_WARNING_IF_NOT(pixel_format<T> == _texture->format(), "Texture pixel format and buffer type mismatch.");
             return [texture = _texture, buffer = bv.buffer()->shared_from_this(), offset = bv.byte_offset()](Dispatcher &d) {
                 texture->copy_from(d, buffer.get(), offset);
             };
@@ -123,7 +123,7 @@ public:
 
         template<typename T>
         [[nodiscard]] auto copy_to(BufferView<T> &bv) const {
-            LUISA_WARNING_IF_NOT(pixel_format<T> == _texture->format(), "Texture pixel format and buffer type mismatch.");
+            LUMINOUS_WARNING_IF_NOT(pixel_format<T> == _texture->format(), "Texture pixel format and buffer type mismatch.");
             return [texture = _texture, buffer = bv.buffer()->shared_from_this(), offset = bv.byte_offset()](Dispatcher &d) {
                 texture->copy_to(d, buffer.get(), offset);
             };

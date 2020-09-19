@@ -6,6 +6,9 @@ set(APP_NAME Luminous)
 
 set(CMAKE_CXX_STANDARD 17)
 
+add_subdirectory(thirdparty/spdlog)
+add_subdirectory(tests)
+
 include_directories("${PROJECT_SOURCE_DIR}/src")
 include_directories("${PROJECT_SOURCE_DIR}/src/ext/stblib/stb")
 
@@ -28,11 +31,12 @@ endfunction(assign_source_group)
 foreach (_source IN ITEMS ${ALL_FILES})
     assign_source_group(${_source})
 endforeach ()
-add_subdirectory(thirdparty/spdlog)
+
 
 include_directories("${PROJECT_SOURCE_DIR}/thirdparty/spdlog/include")
 
-add_executable(${APP_NAME} ${ALL_FILES} src/util/logging.cpp)
+
+add_executable(${APP_NAME} ${ALL_FILES})
 
 
 
