@@ -678,3 +678,4 @@ namespace luminous::compute::dsl {
 #define Continue ::luminous::compute::dsl::Function::current().add_continue()
 
 }
+#endif

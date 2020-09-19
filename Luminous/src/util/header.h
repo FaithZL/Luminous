@@ -6,5 +6,6 @@
 
 #include "macro.h"
 #include "ext/nlohmann/json.hpp"
+#include "logging.h"
 
 using nloJson = nlohmann::json ;

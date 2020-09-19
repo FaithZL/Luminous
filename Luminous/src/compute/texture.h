@@ -11,7 +11,6 @@
 
 namespace luminous::compute {
 
-
 enum PixelFormat : uint32_t {
     R8U, RG8U, RGBA8U,
     R32F, RG32F, RGBA32F,
