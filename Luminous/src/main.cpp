@@ -1,8 +1,7 @@
 #include <iostream>
 #include "ext/nlohmann/json.hpp"
-#include "math/data_types.h"
+#include "core/math/data_types.h"
 
-#include "math/math_util.h"
 #include "compute/type_desc.h"
 #include "core/logging.h"
 #include "compute/buffer.h"

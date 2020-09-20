@@ -19,7 +19,7 @@
 #include <unordered_set>
 #include <vector>
 
-#include "math/data_types.h"
+#include "core/math/data_types.h"
 #include "core/concepts.h"
 
 namespace luminous::compute::dsl {

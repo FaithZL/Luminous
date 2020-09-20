@@ -6,7 +6,7 @@
 
 #include <type_traits>
 
-#include <math/math_util.h>
+#include <core/math/math_util.h>
 #include <core/atomic_util.h>
 #include <compute/variable.h>
 #include <compute/function.h>
