@@ -1,0 +1,1 @@
+luminous_add_application(luminous-cpp-code-gen SOURCES cpp_code_gen.cpp)

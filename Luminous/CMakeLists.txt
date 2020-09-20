@@ -22,8 +22,14 @@ function(assign_source_group)
     endforeach ()
 endfunction(assign_source_group)
 
+function(luminous_add_application name)
+    cmake_parse_arguments(APP "" "" "SOURCES" ${ARGN})
+    add_executable(${name} ${APP_SOURCES})
+    target_compile_features(${name} PRIVATE c_std_11 cxx_std_17)
+    target_link_libraries(${name} PRIVATE luminous-core)
+endfunction()
+
 add_subdirectory(thirdparty/spdlog)
-#add_subdirectory(ext/spdlog)
 add_library(spdlog_config INTERFACE)
 target_link_libraries(spdlog_config INTERFACE spdlog::spdlog)
 
