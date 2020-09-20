@@ -4,7 +4,7 @@
 
 #include "compute/type_desc.h"
 #include "core/logging.h"
-#include "compute/buffer.h"
+//#include "compute/buffer.h"
 #include "compute/dsl.h"
 
 using namespace std;

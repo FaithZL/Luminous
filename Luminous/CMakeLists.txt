@@ -6,12 +6,7 @@ set(APP_NAME Luminous CACHE STRING INTERNAL)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_subdirectory(thirdparty/spdlog)
-
-include_directories("${PROJECT_SOURCE_DIR}/src")
-include_directories("${PROJECT_SOURCE_DIR}/src/ext/stblib/stb")
-
-file(GLOB_RECURSE ALL_FILES "src/*.h*" "src/*.c*")
+include(CheckLanguage)
 
 # 定义按目录结构归类的方法
 function(assign_source_group)
@@ -27,15 +22,11 @@ function(assign_source_group)
     endforeach ()
 endfunction(assign_source_group)
 
-foreach (_source IN ITEMS ${ALL_FILES})
-    assign_source_group(${_source})
-endforeach ()
+add_subdirectory(thirdparty/spdlog)
+#add_subdirectory(ext/spdlog)
+add_library(spdlog_config INTERFACE)
+target_link_libraries(spdlog_config INTERFACE spdlog::spdlog)
 
-
-include_directories("${PROJECT_SOURCE_DIR}/thirdparty/spdlog/include")
-
-
-add_executable(${APP_NAME} ${ALL_FILES})
-
+add_subdirectory(src)
 
 
