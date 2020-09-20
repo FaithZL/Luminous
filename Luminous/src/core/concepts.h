@@ -9,7 +9,7 @@ LUMINOUS_BEGIN
 
 inline namespace utility {
 
-    class CObject {
+    class IObject {
 
     };
 
