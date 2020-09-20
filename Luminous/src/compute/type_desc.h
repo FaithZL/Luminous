@@ -20,7 +20,7 @@
 #include <vector>
 
 #include "math/data_types.h"
-#include "core/CObject.h"
+#include "util/concepts.h"
 
 namespace luminous::compute::dsl {
 

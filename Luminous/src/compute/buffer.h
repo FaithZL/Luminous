@@ -9,7 +9,7 @@
 #include <functional>
 #include <utility>
 
-#include <core/CObject.h>
+#include <util/concepts.h>
 #include <compute/dispatcher.h>
 #include <compute/dsl.h>
 

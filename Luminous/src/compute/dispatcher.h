@@ -9,7 +9,7 @@
 #include <thread>
 #include <future>
 #include <functional>
-#include <core/CObject.h>
+#include <util/concepts.h>
 #include <math/data_types.h>
 
 namespace luminous::compute {
