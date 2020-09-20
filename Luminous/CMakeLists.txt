@@ -2,12 +2,11 @@ cmake_minimum_required(VERSION 3.17)
 project(Luminous)
 
 # 项目信息
-set(APP_NAME Luminous)
+set(APP_NAME Luminous CACHE STRING INTERNAL)
 
 set(CMAKE_CXX_STANDARD 17)
 
 add_subdirectory(thirdparty/spdlog)
-add_subdirectory(tests)
 
 include_directories("${PROJECT_SOURCE_DIR}/src")
 include_directories("${PROJECT_SOURCE_DIR}/src/ext/stblib/stb")

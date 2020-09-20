@@ -12,7 +12,7 @@ using namespace std;
 using namespace luminous;
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    LUMINOUS_INFO(123, "dasf");
 
     return 0;
 }
