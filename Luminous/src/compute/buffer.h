@@ -9,7 +9,7 @@
 #include <functional>
 #include <utility>
 
-#include <util/concepts.h>
+#include <core/concepts.h>
 #include <compute/dispatcher.h>
 #include <compute/dsl.h>
 

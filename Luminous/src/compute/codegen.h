@@ -7,8 +7,8 @@
 #include <ostream>
 
 #include <compute/function.h>
-#include <util/platform.h>
-#include <util/header.h>
+#include <core/platform.h>
+#include <core/header.h>
 #include "expression.h"
 #include "statement.h"
 

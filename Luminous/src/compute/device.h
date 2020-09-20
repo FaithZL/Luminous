@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "util/concepts.h"
+#include "core/concepts.h"
 
 LUMINOUS_BEGIN
 

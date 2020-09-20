@@ -4,7 +4,7 @@
 
 #include "math/math_util.h"
 #include "compute/type_desc.h"
-#include "util/logging.h"
+#include "core/logging.h"
 #include "compute/buffer.h"
 #include "compute/dsl.h"
 
