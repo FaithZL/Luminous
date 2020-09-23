@@ -1,3 +1,6 @@
 [submodule "Luminous/thirdpartys/spdlog"]
 	path = Luminous/thirdparty/spdlog
 	url = https://github.com/gabime/spdlog.git
+[submodule "Luminous/thirdparty/cxxopts"]
+	path = Luminous/thirdparty/cxxopts
+	url = https://github.com/jarro2783/cxxopts.git

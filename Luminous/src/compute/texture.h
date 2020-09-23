@@ -5,8 +5,8 @@
 #pragma once
 
 #include <cstdint>
-#include <math/data_types.h>
-#include <util/logging.h>
+#include <core/math/data_types.h>
+#include <core/logging.h>
 #include <compute/buffer.h>
 
 namespace luminous::compute {

@@ -33,6 +33,10 @@ add_subdirectory(thirdparty/spdlog)
 add_library(spdlog_config INTERFACE)
 target_link_libraries(spdlog_config INTERFACE spdlog::spdlog)
 
+add_subdirectory(thirdparty/cxxopts)
+add_library(cxxopts_config INTERFACE)
+target_link_libraries(cxxopts_config INTERFACE cxxopts::cxxopts)
+
 add_subdirectory(src)
 
 
