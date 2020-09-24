@@ -31,21 +31,37 @@ namespace luminous::compute::dsl {
             // scalars
             auto emit = [this](auto &&s) noexcept {
                 using T = std::decay_t<decltype(s)>;
-                if constexpr (std::is_same_v<T, bool>) { _os << s; }
-                else if constexpr (std::is_same_v<T, float>) {
-                    if (std::isinf(s)) { _os << "static_cast<float>(1.0f / +0.0f)"; } else { _os << s << "f"; }  // TODO: Better handling of inf/nan
-                } else if constexpr (std::is_same_v<T, int8_t>) { _os << "static_cast<int8_t>(" << s << ")"; }
-                else if constexpr (std::is_same_v<T, uint8_t>) { _os << "static_cast<uint8_t>(" << s << ")"; }
-                else if constexpr (std::is_same_v<T, int16_t>) { _os << "static_cast<int16_t>(" << s << ")"; }
-                else if constexpr (std::is_same_v<T, uint16_t>) { _os << "static_cast<uint16_t>(" << s << ")"; }
-                else if constexpr (std::is_same_v<T, int32_t>) { _os << s; }
-                else if constexpr (std::is_same_v<T, uint32_t>) { _os << s << "u"; }
+                if constexpr (std::is_same_v<T, bool>) {
+                    _os << s;
+                } else if constexpr (std::is_same_v<T, float>) {
+                    if (std::isinf(s)) {
+                        _os << "static_cast<float>(1.0f / +0.0f)";
+                    } else if (std::isnan(s)) {
+                        _os << "static_cast<float>(0.0f / +0.0f)";
+                    } else {
+                        _os << s << "f";
+                    }
+                } else if constexpr (std::is_same_v<T, int8_t>) {
+                    _os << "static_cast<int8_t>(" << s << ")";
+                } else if constexpr (std::is_same_v<T, uint8_t>) {
+                    _os << "static_cast<uint8_t>(" << s << ")";
+                } else if constexpr (std::is_same_v<T, int16_t>) {
+                    _os << "static_cast<int16_t>(" << s << ")";
+                } else if constexpr (std::is_same_v<T, uint16_t>) {
+                    _os << "static_cast<uint16_t>(" << s << ")";
+                } else if constexpr (std::is_same_v<T, int32_t>) {
+                    _os << s;
+                } else if constexpr (std::is_same_v<T, uint32_t>) {
+                    _os << s << "u";
+                }
             };
 
             using T = std::decay_t<decltype(v)>;
 
             // scalar
-            if constexpr (is_scalar<T>) { emit(v); }
+            if constexpr (is_scalar<T>) {
+                emit(v);
+            }
 
                 // type2
             else if constexpr (std::is_same_v<T, bool2>) {
