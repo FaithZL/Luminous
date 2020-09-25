@@ -6,6 +6,7 @@ foreach (_source IN ITEMS ${ALL_FILES})
 endforeach ()
 
 include_directories("${PROJECT_SOURCE_DIR}/thirdparty/spdlog/include")
+include_directories("${PROJECT_SOURCE_DIR}/thirdparty/cxxopts/include")
 
 add_subdirectory(core)
 add_subdirectory(compute)
