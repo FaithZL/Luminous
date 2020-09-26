@@ -54,11 +54,15 @@ namespace luminous {
         [[nodiscard]] std::filesystem::path cache_path(const std::filesystem::path &name = {}) noexcept;
 
         template<typename F>
-        [[nodiscard]] auto load_dynamic_function(const std::filesystem::path &path, std::string_view module, std::string_view function) {
+        [[nodiscard]] auto load_dynamic_function(const std::filesystem::path &path,
+                                                 std::string_view module,
+                                                 std::string_view function) {
             LUMINOUS_EXCEPTION_IF(module.empty(), "Empty name given for dynamic module");
             auto module_path = std::filesystem::canonical(path / serialize(LUMINOUS_DLL_PREFIX, module, LUMINOUS_DLL_EXTENSION));
             auto iter = _loaded_modules.find(module_path);
-            if (iter == _loaded_modules.cend()) { iter = _loaded_modules.emplace(module_path, load_dynamic_module(module_path)).first; }
+            if (iter == _loaded_modules.cend()) {
+                iter = _loaded_modules.emplace(module_path, load_dynamic_module(module_path)).first;
+            }
             return load_dynamic_symbol<F>(iter->second, std::string{function});
         }
 
@@ -76,12 +80,18 @@ namespace luminous {
         }
 
         template<typename T>
-        [[nodiscard]] T cli_option(const std::string &opt_name) const { return _parse_result()[opt_name].as<T>(); }
+        [[nodiscard]] T cli_option(const std::string &opt_name) const {
+            return _parse_result()[opt_name].as<T>();
+        }
 
-        [[nodiscard]] std::string cli_positional_option() const { return _parse_result()["positional"].as<std::string>(); }
+        [[nodiscard]] std::string cli_positional_option() const {
+            return _parse_result()["positional"].as<std::string>();
+        }
 
         [[nodiscard]] const std::vector<DeviceSelection> &device_selections() noexcept;
-        [[nodiscard]] bool should_print_generated_source() const noexcept { return cli_option<bool>("print-source"); }
+        [[nodiscard]] bool should_print_generated_source() const noexcept {
+            return cli_option<bool>("print-source");
+        }
     };
 
 }

@@ -48,7 +48,9 @@ namespace luminous {
     }
 
     Context::~Context() noexcept {
-        for (auto &&module_item : _loaded_modules) { destroy_dynamic_module(module_item.second); }
+        for (auto &&module_item : _loaded_modules) {
+            destroy_dynamic_module(module_item.second);
+        }
     }
 
     Context::Context(int argc, char *argv[])
