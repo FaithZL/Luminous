@@ -2,6 +2,7 @@
 // Created by Zero on 2020/9/20.
 //
 
+//#include <compute/dsl.h>
 #include <compute/dsl_syntax.h>
 #include <compute/codegen.h>
 #include <compute/buffer.h>
@@ -76,42 +77,46 @@ inline Expr<float3> cosine_sample_hemisphere(Expr<float2> u) {
 int main() {
 
     fake_compile_kernel("test", [](){
-//        Var<int> a = 1;
-//        If(a > 0 && b < 0) {
-//            b = 0;
-//        } Elif (b > 0) {
-//            a = 0;
-//        } Else {
-//            a = 0;
-//        };
+        Var<int> a = 1;
+        Var b = 0;
+        If(a > 0 && b < 0) {
+            b = 0;
+        } Elif (b > 0) {
+            a = 0;
+        } Else {
+            a = 0;
+        };
 
 
-        auto foo = [&](Expr<float> x) {
+        auto foo = [&](Expr<int> x) {
             Var xx = x;
-            return xx < 0.0f;
+            return xx < 0;
         };
         Var x = -1;
-        While (foo(x)) { x += 1; };
-//        While(a) {
-//            a += 1;
-//        };
+        While (foo(x)) {
+            x += 1;
+            x += 2;
+        };
+        While(a) {
+            a += 1;
+        };
 
-//        Var<float2> c = make_float2(0);
-//
-//        Var aa = cosine_sample_hemisphere(c);
-//
-//        Switch(a) {
-//            Case(1) {
-//                a = 0;
-//            };
-//            Case(2) {
-//                b = 0;
-//            };
-//            Default {
-//
-//            };
-//        };
-//        Var i = 5;
+        Var<float2> c = make_float2(0);
+
+        Var aa = cosine_sample_hemisphere(c);
+
+        Switch(a) {
+            Case(1) {
+                a = 0;
+            };
+            Case(2) {
+                b = 0;
+            };
+            Default {
+
+            };
+        };
+        Var i = 5;
 
     });
 

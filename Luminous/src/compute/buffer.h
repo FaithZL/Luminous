@@ -58,17 +58,24 @@ public:
         size_t _offset{0u};
         size_t _size{0u};
 
-        void _copy_from(Dispatcher &dispatcher, const void *host_data) const { _buffer->upload(dispatcher, byte_offset(), byte_size(), host_data); }
-        void _copy_to(Dispatcher &dispatcher, void *host_buffer) const { _buffer->download(dispatcher, byte_offset(), byte_size(), host_buffer); }
+        void _copy_from(Dispatcher &dispatcher, const void *host_data) const {
+            _buffer->upload(dispatcher, byte_offset(), byte_size(), host_data);
+        }
+        void _copy_to(Dispatcher &dispatcher, void *host_buffer) const {
+            _buffer->download(dispatcher, byte_offset(), byte_size(), host_buffer);
+        }
 
     public:
         BufferView() noexcept = default;
 
-        explicit BufferView(std::shared_ptr<Buffer> buffer, size_t offset = 0u, size_t size = npos) noexcept: _buffer{std::move(buffer)}, _offset{offset}, _size{size} {
+        explicit BufferView(std::shared_ptr<Buffer> buffer, size_t offset = 0u, size_t size = npos) noexcept:
+        _buffer{std::move(buffer)}, _offset{offset}, _size{size} {
             if (_size == npos) { _size = (_buffer->size() - byte_offset()) / sizeof(T); }
         }
 
-        [[nodiscard]] BufferView subview(size_t offset, size_t size = npos) const noexcept { return {_buffer, _offset + offset, size}; }
+        [[nodiscard]] BufferView subview(size_t offset, size_t size = npos) const noexcept {
+            return {_buffer, _offset + offset, size};
+        }
 
         [[nodiscard]] bool empty() const noexcept { return _buffer == nullptr || _size == 0u; }
         [[nodiscard]] Buffer *buffer() const noexcept { return _buffer.get(); }
@@ -77,10 +84,22 @@ public:
         [[nodiscard]] size_t byte_offset() const noexcept { return _offset * sizeof(T); }
         [[nodiscard]] size_t byte_size() const noexcept { return _size * sizeof(T); }
 
-        [[nodiscard]] auto copy_from(const void *data) { return [self = *this, data](Dispatcher &d) { self._copy_from(d, data); }; }
-        [[nodiscard]] auto copy_to(void *data) const { return [self = *this, data](Dispatcher &d) { self._copy_to(d, data); }; }
+        [[nodiscard]] auto copy_from(const void *data) {
+            auto ret = [self = *this, data](Dispatcher &d) {
+                self._copy_from(d, data);
+            };
+            return ret
+        }
+        [[nodiscard]] auto copy_to(void *data) const {
+            auto ret = [self = *this, data](Dispatcher &d) {
+                self._copy_to(d, data);
+            };
+            return ret;
+        }
 
-        void clear_cache() const noexcept { _buffer->clear_cache(); }
+        void clear_cache() const noexcept {
+            _buffer->clear_cache();
+        }
 
         [[nodiscard]] auto modify(std::function<void(T *)> modify) {
             return [modify = std::move(modify), self = *this](Dispatcher &dispatch) {
@@ -95,14 +114,16 @@ public:
         [[nodiscard]] auto operator[](Index &&index) const noexcept {
             LUMINOUS_EXCEPTION_IF(empty(), "Indexing into empty buffer.");
             using namespace luminous::compute::dsl;
-//            auto v = Variable::make_buffer_argument(type_desc<T>, _buffer);
-//            if (_offset == 0u) {
-//                auto i = Expr{std::forward<Index>(index)};
-//                return Expr<T>{Variable::make_temporary(type_desc<T>, std::make_unique<BinaryExpr>(BinaryOp::ACCESS, v, i.variable()))};
-//            } else {
-//                auto i = Expr{std::forward<Index>(index)} + static_cast<uint32_t>(_offset);
-//                return Expr<T>{Variable::make_temporary(type_desc<T>, std::make_unique<BinaryExpr>(BinaryOp::ACCESS, v, i.variable()))};
-//            }
+            auto v = Variable::make_buffer_argument(type_desc<T>, _buffer);
+            if (_offset == 0u) {
+                auto i = Expr{std::forward<Index>(index)};
+                return Expr<T>{Variable::make_temporary(type_desc<T>,
+                        std::make_unique<BinaryExpr>(BinaryOp::ACCESS, v, i.variable()))};
+            } else {
+                auto i = Expr{std::forward<Index>(index)} + static_cast<uint32_t>(_offset);
+                return Expr<T>{Variable::make_temporary(type_desc<T>,
+                        std::make_unique<BinaryExpr>(BinaryOp::ACCESS, v, i.variable()))};
+            }
         }
 
     };
