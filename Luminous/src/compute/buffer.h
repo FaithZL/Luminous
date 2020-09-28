@@ -88,7 +88,7 @@ public:
             auto ret = [self = *this, data](Dispatcher &d) {
                 self._copy_from(d, data);
             };
-            return ret
+            return ret;
         }
         [[nodiscard]] auto copy_to(void *data) const {
             auto ret = [self = *this, data](Dispatcher &d) {

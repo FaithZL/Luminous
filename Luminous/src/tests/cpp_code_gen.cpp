@@ -8,8 +8,9 @@
 #include <compute/buffer.h>
 #include "compute/device.h"
 #include "compute/function.h"
-#include "compute/codegen.h"
+//#include "compute/ray.h"
 #include "core/math/data_types.h"
+
 
 using namespace std;
 
