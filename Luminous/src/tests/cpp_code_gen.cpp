@@ -14,7 +14,7 @@
 
 using namespace std;
 
-using namespace luminous;
+//using namespace luminous;
 
 using namespace luminous::compute;
 
@@ -33,10 +33,10 @@ void test() {
     while (v1) {
         v1 += 1;
     }
-    float2 v3{luminous::make_float2(0)};
+    luminous::float2 v3{luminous::make_float2(0)};
     float v4{sqrt((v3.x))};
     float v5{(0x1.921fb6p+2f * (v3.y))};
-    float3 v6{make_float3((v4 * cos(v5)), (v4 * sin(v5)), sqrt((0x1p+0f - (v3.x))))};
+    luminous::float3 v6{luminous::make_float3((v4 * cos(v5)), (v4 * sin(v5)), sqrt((0x1p+0f - (v3.x))))};
     switch (v1) {
         case 1: {
             v1 = 0;
@@ -69,7 +69,7 @@ void fake_compile_kernel(std::string name, Def &&def) {
     LUMINOUS_INFO("Done.");
 }
 
-inline Expr<float3> cosine_sample_hemisphere(Expr<float2> u) {
+inline Expr<luminous::float3> cosine_sample_hemisphere(Expr<luminous::float2> u) {
     Var r = sqrt(u.x());
     Var phi = static_cast<float>(2.0f * M_PI) * u.y();
     return make_float3(r * cos(phi), r * sin(phi), sqrt(1.0f - u.x()));
@@ -102,7 +102,7 @@ int main() {
             a += 1;
         };
 
-        Var<float2> c = make_float2(0);
+        Var<luminous::float2> c = make_float2(0);
 
         Var aa = cosine_sample_hemisphere(c);
 
