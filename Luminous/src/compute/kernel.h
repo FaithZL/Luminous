@@ -63,6 +63,8 @@ namespace luminous::compute {
             };
         }
 
-        [[nodiscard]] bool empty() const noexcept { return !_kernel.valid(); }
+        [[nodiscard]] bool empty() const noexcept {
+            return !_kernel.valid();
+        }
     };
 }

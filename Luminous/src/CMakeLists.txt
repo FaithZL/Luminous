@@ -5,10 +5,16 @@ foreach (_source IN ITEMS ${ALL_FILES})
     assign_source_group(${_source})
 endforeach ()
 
+
+
 include_directories("${PROJECT_SOURCE_DIR}/thirdparty/spdlog/include")
 include_directories("${PROJECT_SOURCE_DIR}/thirdparty/cxxopts/include")
+
+add_library(luminous-all INTERFACE)
+target_link_libraries(luminous-all INTERFACE luminous-core luminous-compute)
 
 add_subdirectory(core)
 add_subdirectory(compute)
 add_subdirectory(apps)
 add_subdirectory(tests)
+add_subdirectory(backends)

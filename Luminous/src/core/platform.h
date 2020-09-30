@@ -64,7 +64,7 @@ inline namespace utility {
 #define LUMINOUS_DLL_PREFIX ""
 #define LUMINOUS_DLL_EXTENSION ".dll"
 
-namespace luisa { inline namespace utility {
+namespace luminous { inline namespace utility {
 
 using DynamicModuleHandle = HMODULE;
 

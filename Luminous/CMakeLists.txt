@@ -26,7 +26,7 @@ function(luminous_add_application name)
     cmake_parse_arguments(APP "" "" "SOURCES" ${ARGN})
     add_executable(${name} ${APP_SOURCES})
     target_compile_features(${name} PRIVATE c_std_11 cxx_std_17)
-    target_link_libraries(${name} PRIVATE luminous-compute)
+    target_link_libraries(${name} PRIVATE luminous-all)
 endfunction()
 
 add_subdirectory(thirdparty/spdlog)
