@@ -427,7 +427,7 @@ template<uint N>
                          m[0].w, m[1].w, m[2].w, m[3].w);
 }
 
-[[nodiscard]] auto inverse(float3x3 m) noexcept {// from GLM
+ [[nodiscard]] constexpr auto inverse(float3x3 m) noexcept {// from GLM
     auto one_over_determinant = 1.0f / (m[0].x * (m[1].y * m[2].z - m[2].y * m[1].z) - m[1].x * (m[0].y * m[2].z - m[2].y * m[0].z) + m[2].x * (m[0].y * m[1].z - m[1].y * m[0].z));
     return make_float3x3(
             (m[1].y * m[2].z - m[2].y * m[1].z) * one_over_determinant,
