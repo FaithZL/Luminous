@@ -16,7 +16,8 @@ namespace luminous::metal {
         std::lock_guard lock{_cache_mutex};
         id<MTLBuffer> cache = nullptr;
         if (_available_caches.empty()) {
-            cache = [_device newBufferWithLength:_cache_size options:MTLResourceStorageModeShared | MTLResourceHazardTrackingModeUntracked];
+            cache = [_device newBufferWithLength:_cache_size
+                     options:MTLResourceStorageModeShared | MTLResourceHazardTrackingModeUntracked];
             _allocated_caches.emplace(cache);
         } else {
             cache = _available_caches.back();
