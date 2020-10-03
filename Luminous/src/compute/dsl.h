@@ -525,19 +525,19 @@ namespace luminous::compute::dsl {                                              
         return Expr<R>{Variable::make_temporary(type_desc<R>, std::make_unique<MemberExpr>(this->_variable, #name))};  \
     }
 
-#define LUMINOUS_STRUCT_SPECIALIZE_EXPR(S, ...)                            \
-namespace luminous::compute::dsl {                                         \
+#define LUMINOUS_STRUCT_SPECIALIZE_EXPR(S, ...)                         \
+namespace luminous::compute::dsl {                                      \
 template<> struct Expr<S> : public ExprBase {                           \
     using Type = S;                                                     \
     explicit Expr(const Variable *v) noexcept : ExprBase{v} {}          \
     Expr(ExprBase &&expr) noexcept : ExprBase{expr.variable()} {}       \
     Expr(const ExprBase &expr) noexcept : ExprBase{expr.variable()} {}  \
-    LUMINOUS_MAP(LUMINOUS_STRUCT_MAP_MEMBER_NAME_TO_EXPR, __VA_ARGS__)        \
+    LUMINOUS_MAP(LUMINOUS_STRUCT_MAP_MEMBER_NAME_TO_EXPR, __VA_ARGS__)  \
 };                                                                      \
 }
 
 #define LUMINOUS_STRUCT(S, ...)                            \
 LUMINOUS_STRUCT_BEGIN(S)                                   \
-     LUMINOUS_MAP(LUMINOUS_STRUCT_MEMBER, __VA_ARGS__)        \
+     LUMINOUS_MAP(LUMINOUS_STRUCT_MEMBER, __VA_ARGS__)     \
 LUMINOUS_STRUCT_END()                                      \
 LUMINOUS_STRUCT_SPECIALIZE_EXPR(S, __VA_ARGS__)
