@@ -25,6 +25,13 @@ namespace luminous::compute {
 
         virtual void _launch(const std::function<void(Dispatcher &)> &dispatch) = 0;
 
+        [[nodiscard]] TextureView _load_texture_exr(const std::filesystem::path &file_name, bool gray_to_rgba);
+
+        [[nodiscard]] TextureView _load_texture_hdr(const std::filesystem::path &file_name, bool gray_to_rgba);
+
+        // png，jpg，tga
+        [[nodiscard]] TextureView _load_texture_ldr(const std::filesystem::path &file_name, bool gray_to_rgba);
+
     public:
         explicit Device(Context *context) noexcept: _context{context} {}
         virtual ~Device() noexcept = default;
@@ -91,4 +98,6 @@ namespace luminous::compute {
 
         [[nodiscard]] static std::unique_ptr<Device> create(Context *context, uint32_t selection_id = 0u);
     };
+
+    using DeviceCreator = Device *(Context *, uint32_t);
 }
