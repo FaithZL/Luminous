@@ -11,10 +11,11 @@ include_directories("${PROJECT_SOURCE_DIR}/thirdparty/spdlog/include")
 include_directories("${PROJECT_SOURCE_DIR}/thirdparty/cxxopts/include")
 
 add_library(luminous-all INTERFACE)
-target_link_libraries(luminous-all INTERFACE luminous-core luminous-compute)
+target_link_libraries(luminous-all INTERFACE luminous-core luminous-compute luminous-ext)
 
 add_subdirectory(core)
 add_subdirectory(compute)
 add_subdirectory(apps)
 add_subdirectory(tests)
 add_subdirectory(backends)
+add_subdirectory(ext)
