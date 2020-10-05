@@ -17,6 +17,7 @@
 namespace luminous::compute {
     class Device : Noncopyable {
     protected:
+        uint _index{0u};
         Context *_context{nullptr};
 
         [[nodiscard]] virtual std::shared_ptr<Buffer> _allocate_buffer(size_t size) = 0;
@@ -33,9 +34,12 @@ namespace luminous::compute {
         [[nodiscard]] TextureView _load_texture_ldr(const std::filesystem::path &file_name, bool gray_to_rgba);
 
     public:
-        explicit Device(Context *context) noexcept: _context{context} {}
+        explicit Device(Context *context, uint index) noexcept: _context{context}, _index{index} {
+
+        }
         virtual ~Device() noexcept = default;
 
+        [[nodiscard]] uint index() const noexcept { return _index; }
         [[nodiscard]] Context &context() const noexcept { return *_context; }
 
         template<typename Def, std::enable_if_t<std::is_invocable_v<Def>, int> = 0>
@@ -44,9 +48,7 @@ namespace luminous::compute {
             dsl::Function::push(function.get());
             def();
             dsl::Function::pop(function.get());
-            return KernelView{std::async(std::launch::async, [function = std::move(function), this] {
-                return _compile_kernel(*function);
-            })};
+            return KernelView{std::async(std::launch::async, [function = std::move(function), this] { return _compile_kernel(*function); })};
         }
 
         template<typename Def, std::enable_if_t<std::is_invocable_v<Def>, int> = 0>
@@ -71,27 +73,22 @@ namespace luminous::compute {
         [[nodiscard]] TextureView load_texture(const std::filesystem::path &file_name, bool gray_to_rgba = false);
 
         [[nodiscard]] virtual std::unique_ptr<Acceleration> build_acceleration(
-                                        const BufferView<float3> &positions,
-                                        const BufferView<TriangleHandle> &indices,
-                                        const std::vector<MeshHandle> &meshes,
-                                        const BufferView<uint> &instances,
-                                        const BufferView<float4x4> &transforms,
-                                        bool is_static) = 0;
+                const BufferView<float3> &positions,
+                const BufferView<TriangleHandle> &indices,
+                const std::vector<MeshHandle> &meshes,
+                const BufferView<uint> &instances,
+                const BufferView<float4x4> &transforms,
+                bool is_static) = 0;
 
-        template<typename Work,
-                std::enable_if_t<std::is_invocable_v<Work, Dispatcher &>, int> = 0>
+        template<typename Work, std::enable_if_t<std::is_invocable_v<Work, Dispatcher &>, int> = 0>
         void launch(Work &&work) {
             _launch([&work, this](Dispatcher &dispatch) { dispatch(work); });
         }
 
-        template<typename Work,
-                typename Callback,
-                std::enable_if_t<std::conjunction_v<std::is_invocable<Work, Dispatcher &>,
-                        std::is_invocable<Callback>>, int> = 0>
+        template<typename Work, typename Callback, std::enable_if_t<std::conjunction_v<
+                std::is_invocable<Work, Dispatcher &>, std::is_invocable<Callback>>, int> = 0>
         void launch(Work &&work, Callback &&cb) {
-            _launch([&work, this, &cb](Dispatcher &dispatch) {
-                dispatch(work, cb);
-            });
+            _launch([&work, this, &cb](Dispatcher &dispatch) { dispatch(work, cb); });
         }
 
         virtual void synchronize() = 0;
