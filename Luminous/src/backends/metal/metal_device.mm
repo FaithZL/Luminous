@@ -81,7 +81,88 @@ namespace luminous::metal {
     }
 
     std::shared_ptr<Kernel> MetalDevice::_compile_kernel(const compute::dsl::Function &f) {
+        std::ostringstream os;
+        MetalCodegen codegen{os};
+        codegen.emit(f);
+        auto s = os.str();
 
+        if (_context->should_print_generated_source()) {
+            LUMINOUS_INFO("Generated source:\n", s);
+        }
+
+        auto digest = SHA1{s}.digest();
+
+        id<MTLComputePipelineState> pso = nullptr;
+
+        {
+            std::lock_guard lock{_kernel_cache_mutex};
+            auto iter = _kernel_cache.find(digest);
+            if (iter != _kernel_cache.cend()) {
+                pso = iter->second;
+            }
+        }
+
+        if (pso == nullptr) {
+            NSError *error = nullptr;
+            auto library = [_handle newLibraryWithSource:@(s.c_str()) options:nullptr error:&error];
+            if (error != nullptr && error.code != MTLLibraryErrorCompileWarning) {
+                LUMINOUS_EXCEPTION("Compilation failed, reason:\n", [error.description cStringUsingEncoding:NSUTF8StringEncoding]);
+            }
+
+            // Create PSO
+            auto function = [library newFunctionWithName:@(f.name().c_str())];
+            auto desc = [[MTLComputePipelineDescriptor alloc] init];
+            desc.computeFunction = function;
+            desc.threadGroupSizeIsMultipleOfThreadExecutionWidth = true;
+            desc.label = @(f.name().c_str());
+
+            error = nullptr;
+            pso = [_handle newComputePipelineStateWithDescriptor:desc options:MTLPipelineOptionNone reflection:nullptr error:&error];
+            if (error != nullptr) {
+                LUMINOUS_WARNING("Error occurred while creating pipeline state object, reason:");
+                NSLog(@"%@", error);
+                LUMINOUS_EXCEPTION("Failed to create pipeline state object for kernel \"", f.name(), "\".");
+            }
+
+            {
+                std::lock_guard lock{_kernel_cache_mutex};
+                _kernel_cache.emplace(digest, pso);
+            }
+
+        }
+
+        std::vector<MetalKernel::Uniform> uniforms;
+        std::vector<MetalKernel::Resource> resources;
+        size_t uniform_offset = 0u;
+        for (auto &&arg : f.arguments()) {
+            if (arg->is_buffer_argument()) {
+                Kernel::Resource r;
+                r.buffer = arg->buffer()->shared_from_this();
+                resources.emplace_back(std::move(r));
+            } else if (arg->is_texture_argument()) {
+                Kernel::Resource r;
+                r.texture = arg->texture()->shared_from_this();
+                resources.emplace_back(std::move(r));
+            } else if (arg->is_uniform_argument()) {
+                auto alignment = arg->type()->alignment;
+                uniform_offset = (uniform_offset + alignment - 1u) / alignment * alignment;
+                Kernel::Uniform uniform;
+                uniform.offset = uniform_offset;
+                uniform.binding = arg->uniform_data();
+                uniform.binding_size = arg->type()->size;
+                uniforms.emplace_back(std::move(uniform));
+                uniform_offset += arg->type()->size;
+            } else if (arg->is_immutable_argument()) {
+                auto alignment = arg->type()->alignment;
+                uniform_offset = (uniform_offset + alignment - 1u) / alignment * alignment;
+                Kernel::Uniform uniform;
+                uniform.immutable = arg->immutable_data();
+                uniform.offset = uniform_offset;
+                uniforms.emplace_back(std::move(uniform));
+                uniform_offset += arg->type()->size;
+            }
+        }
+        return std::make_shared<MetalKernel>(pso, std::move(resources), std::move(uniforms));
     }
 
     std::shared_ptr<Buffer> MetalDevice::_allocate_buffer(size_t size) {
@@ -142,7 +223,52 @@ namespace luminous::metal {
                                                                   const BufferView<uint> &instances,
                                                                   const BufferView<float4x4> &transforms,
                                                                   bool is_static) {
+        auto acceleration_group = [[MPSAccelerationStructureGroup alloc] initWithDevice:_handle];
+        auto instance_acceleration = [[MPSInstanceAccelerationStructure alloc] initWithGroup:acceleration_group];
 
+        auto acceleration_structures = [NSMutableArray array];
+        instance_acceleration.accelerationStructures = acceleration_structures;
+
+        // create individual triangle acceleration structures
+        for (auto m : meshes) {
+            auto triangle_acceleration = [[MPSTriangleAccelerationStructure alloc] initWithGroup:acceleration_group];
+            triangle_acceleration.vertexBuffer = dynamic_cast<MetalBuffer *>(positions.buffer())->handle();
+            triangle_acceleration.vertexBufferOffset = positions.byte_offset() + m.vertex_offset * sizeof(float3);
+            triangle_acceleration.vertexStride = sizeof(float3);
+            triangle_acceleration.indexBuffer = dynamic_cast<MetalBuffer *>(indices.buffer())->handle();
+            triangle_acceleration.indexBufferOffset = indices.byte_offset() + m.triangle_offset * sizeof(TriangleHandle);
+            triangle_acceleration.indexType = MPSDataTypeUInt32;
+            triangle_acceleration.triangleCount = m.triangle_count;
+            [triangle_acceleration rebuild];
+            [acceleration_structures addObject:triangle_acceleration];
+        }
+
+        instance_acceleration.instanceBuffer = dynamic_cast<MetalBuffer *>(instances.buffer())->handle();
+        instance_acceleration.instanceBufferOffset = instances.byte_offset();
+        instance_acceleration.instanceCount = instances.size();
+        instance_acceleration.transformBuffer = dynamic_cast<MetalBuffer *>(transforms.buffer())->handle();
+        instance_acceleration.transformBufferOffset = transforms.byte_offset();
+        instance_acceleration.transformType = MPSTransformTypeFloat4x4;
+        instance_acceleration.usage = is_static ? MPSAccelerationStructureUsageNone : MPSAccelerationStructureUsageRefit;
+        [instance_acceleration rebuild];
+
+        auto closest_intersector = [[MPSRayIntersector alloc] initWithDevice:_handle];
+        closest_intersector.rayDataType = MPSRayDataTypeOriginMinDistanceDirectionMaxDistance;
+        closest_intersector.rayStride = sizeof(Ray);
+        closest_intersector.intersectionDataType = MPSIntersectionDataTypeDistancePrimitiveIndexInstanceIndexCoordinates;
+        closest_intersector.intersectionStride = sizeof(ClosestHit);
+        closest_intersector.boundingBoxIntersectionTestType = MPSBoundingBoxIntersectionTestTypeDefault;
+        closest_intersector.triangleIntersectionTestType = MPSTriangleIntersectionTestTypeDefault;
+
+        auto any_intersector = [[MPSRayIntersector alloc] initWithDevice:_handle];
+        any_intersector.rayDataType = MPSRayDataTypeOriginMinDistanceDirectionMaxDistance;
+        any_intersector.rayStride = sizeof(Ray);
+        any_intersector.intersectionDataType = MPSIntersectionDataTypeDistance;
+        any_intersector.intersectionStride = sizeof(AnyHit);
+        any_intersector.boundingBoxIntersectionTestType = MPSBoundingBoxIntersectionTestTypeDefault;
+        any_intersector.triangleIntersectionTestType = MPSTriangleIntersectionTestTypeDefault;
+
+        return std::make_unique<MetalAcceleration>(instance_acceleration, closest_intersector, any_intersector);
     }
 
 }

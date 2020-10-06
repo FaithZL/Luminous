@@ -56,6 +56,12 @@ protected:
     uint32_t _height;
     PixelFormat _format;
 
+    void _save_hdr(Dispatcher &dispatcher, const std::filesystem::path &path);
+
+    void _save_ldr(Dispatcher &dispatcher, const std::filesystem::path &path);
+
+    void _save_exr(Dispatcher &dispatcher, const std::filesystem::path &path);
+
 public:
     Texture(uint32_t width, uint32_t height, PixelFormat format) noexcept
             : _width{width}, _height{height}, _format{format} {}
@@ -187,6 +193,7 @@ public:
     [[nodiscard]] inline TextureView Texture::view() noexcept {
         return TextureView{shared_from_this()};
     }
+
 
 
 }
