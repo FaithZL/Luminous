@@ -25,9 +25,7 @@ public:
 protected:
     std::vector<std::function<void()>> _callbacks;
 
-    virtual void _on_dispatch() {
-
-    };
+    virtual void _on_dispatch() = 0;
 public:
 
     virtual ~Dispatcher() noexcept = default;

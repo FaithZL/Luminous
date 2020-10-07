@@ -28,12 +28,13 @@ namespace luminous::metal {
 
     void MetalHostCache::recycle(id<MTLBuffer> cache) noexcept {
         std::lock_guard lock{_cache_mutex};
-        LUMINOUS_EXCEPTION_IF(_allocated_caches.find(cache) == _allocated_caches.cend(), "Recycled cache is not allocated by MetalHostCache.");
+        LUMINOUS_EXCEPTION_IF(_allocated_caches.find(cache) == _allocated_caches.cend(),
+                              "Recycled cache is not allocated by MetalHostCache.");
         _available_caches.emplace_back(cache);
     }
 
     void MetalHostCache::clear() noexcept {
-        std::unique_lock lock{_cache_mutex};
+        std::lock_guard lock{_cache_mutex};
         _available_caches.clear();
         _allocated_caches.clear();
     }
