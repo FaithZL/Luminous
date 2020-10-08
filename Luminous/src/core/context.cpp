@@ -60,15 +60,16 @@ namespace luminous {
 
         _cli_options.add_options()
                 ("d,devices", "Select compute devices", cxxopts::value<std::vector<std::string>>()->default_value(""))
-                ("runtime-dir",
-                 "Specify runtime directory",
-                 cxxopts::value<std::filesystem::path>()->default_value(std::filesystem::canonical(argv[0]).parent_path().parent_path().string()))
-                ("working-dir",
+                ("r,runtime-dir", "Specify runtime directory",
+                        cxxopts::value<std::filesystem::path>()->default_value(std::filesystem::canonical(argv[0]).parent_path().parent_path().string()))
+                ("w,working-dir",
                  "Specify working directory",
                  cxxopts::value<std::filesystem::path>()->default_value(std::filesystem::canonical(std::filesystem::current_path()).string()))
-                ("clear-cache", "Clear cached kernel compilation", cxxopts::value<bool>())
-                ("print-source", "Print generated source code", cxxopts::value<bool>())
-                ("positional", "Specify input file", cxxopts::value<std::string>());
+                ("c, clear-cache", "Clear cached kernel compilation", cxxopts::value<bool>())
+                ("p, print-source", "Print generated source code", cxxopts::value<bool>())
+                ("positional", "Specify input file", cxxopts::value<std::string>())
+                ("h,help", "Print usage");
+
     }
 
     const cxxopts::ParseResult &Context::_parse_result() const noexcept {

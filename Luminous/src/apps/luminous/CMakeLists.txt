@@ -1,2 +1,2 @@
 
-luminous_add_application(Luminous SOURCES main.cpp)
+luminous_add_application_metal(Luminous SOURCES main.cpp)

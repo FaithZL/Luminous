@@ -273,3 +273,4 @@ namespace luminous::metal {
 
 }
 
+LUMINOUS_EXPORT_DEVICE_CREATOR(luminous::metal::MetalDevice)

@@ -97,4 +97,9 @@ namespace luminous::compute {
     };
 
     using DeviceCreator = Device *(Context *, uint32_t);
-}
+} // namespace luminous::compute
+
+#define LUMINOUS_EXPORT_DEVICE_CREATOR(DeviceClass)                                                                    \
+    extern "C" LUMINOUS_EXPORT ::luminous::compute::Device *create(::luminous::Context *context, uint32_t device_id) { \
+        return new DeviceClass{context, device_id};                                                                    \
+    }

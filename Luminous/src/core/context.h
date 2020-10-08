@@ -53,6 +53,21 @@ namespace luminous {
         [[nodiscard]] std::filesystem::path input_path(const std::filesystem::path &name = {}) noexcept;
         [[nodiscard]] std::filesystem::path cache_path(const std::filesystem::path &name = {}) noexcept;
 
+        bool has_help_cmd() noexcept {
+            return _parse_result().count("help") > 0;
+        }
+
+        void print_help() noexcept {
+            std::cout << _cli_options.help() << std::endl;
+        }
+
+        void try_print_help_and_exit() noexcept {
+            if (has_help_cmd()) {
+                print_help();
+                exit(0);
+            }
+        }
+
         template<typename F>
         [[nodiscard]] auto load_dynamic_function(const std::filesystem::path &path,
                                                  std::string_view module,
@@ -60,6 +75,7 @@ namespace luminous {
             LUMINOUS_EXCEPTION_IF(module.empty(), "Empty name given for dynamic module");
             auto module_path = std::filesystem::canonical(path / serialize(LUMINOUS_DLL_PREFIX, module, LUMINOUS_DLL_EXTENSION));
             auto iter = _loaded_modules.find(module_path);
+            LUMINOUS_INFO(module_path);
             if (iter == _loaded_modules.cend()) {
                 iter = _loaded_modules.emplace(module_path, load_dynamic_module(module_path)).first;
             }

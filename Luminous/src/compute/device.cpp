@@ -12,7 +12,7 @@ namespace luminous::compute {
         auto &&devices = context->device_selections();
         if (devices.empty()) {// enumerate available devices
             LUMINOUS_WARNING("Compute device is not specified, enumerating automatically...");
-            for (auto backend : {"cuda", "metal"}) {
+            for (auto backend : {"metal"}) {
                 try {
                     LUMINOUS_INFO("Trying to create device \"", backend, ":", 0u, "\"...");
                     auto create_device = context->load_dynamic_function<DeviceCreator>(context->runtime_path("bin") / "backends",
