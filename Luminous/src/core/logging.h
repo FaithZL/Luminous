@@ -18,6 +18,15 @@ inline namespace logging {
 
     spdlog::logger &logger() noexcept;
 
+    inline void set_log_level(spdlog::level::level_enum lvl) noexcept {
+        logger().set_level(lvl);
+    }
+
+    template<typename... Args>
+    inline void debug(Args &&... args) noexcept {
+        logger().debug(serialize(std::forward<Args>(args)...));
+    }
+
     template<typename... Args>
     inline void info(Args &&... args) noexcept {
         logger().info(serialize(std::forward<Args>(args)...));
@@ -72,28 +81,34 @@ inline namespace logging {
 
 }// namespace luminous::logging
 
-#define LUMINOUS_INFO(...) \
-    ::luminous::logging::info(__VA_ARGS__)
-
 #define LUMINOUS_SOURCE_LOCATION __FILE__ , ":", __LINE__
 
+#define debug(...) \
+    ::luminous::logging::debug(__VA_ARGS__, "\n    Source: ", LUMINOUS_SOURCE_LOCATION);
+
+#define SET_LOG_LEVEL(lv) \
+    ::luminous::logging::set_log_level(spdlog::level::level_enum::lv);
+
+#define LUMINOUS_INFO(...) \
+    ::luminous::logging::info(__VA_ARGS__);
+
 #define LUMINOUS_WARNING(...) \
-    ::luminous::logging::warning(__VA_ARGS__, "\n    Source: ", LUMINOUS_SOURCE_LOCATION)
+    ::luminous::logging::warning(__VA_ARGS__, "\n    Source: ", LUMINOUS_SOURCE_LOCATION);
 #define LUMINOUS_WARNING_IF(...) \
-    ::luminous::logging::warning_if(__VA_ARGS__, "\n    Source: ", LUMINOUS_SOURCE_LOCATION)
+    ::luminous::logging::warning_if(__VA_ARGS__, "\n    Source: ", LUMINOUS_SOURCE_LOCATION);
 #define LUMINOUS_WARNING_IF_NOT(...) \
-    ::luminous::logging::warning_if_not(__VA_ARGS__, "\n    Source: ", LUMINOUS_SOURCE_LOCATION)
+    ::luminous::logging::warning_if_not(__VA_ARGS__, "\n    Source: ", LUMINOUS_SOURCE_LOCATION);
 
 #define LUMINOUS_EXCEPTION(...) \
-    ::luminous::logging::exception(__VA_ARGS__, "\n    Source: ", LUMINOUS_SOURCE_LOCATION)
+    ::luminous::logging::exception(__VA_ARGS__, "\n    Source: ", LUMINOUS_SOURCE_LOCATION);
 #define LUMINOUS_EXCEPTION_IF(...) \
-    ::luminous::logging::exception_if(__VA_ARGS__, "\n    Source: ", LUMINOUS_SOURCE_LOCATION)
+    ::luminous::logging::exception_if(__VA_ARGS__, "\n    Source: ", LUMINOUS_SOURCE_LOCATION);
 #define LUMINOUS_EXCEPTION_IF_NOT(...) \
-    ::luminous::logging::exception_if_not(__VA_ARGS__, "\n    Source: ", LUMINOUS_SOURCE_LOCATION)
+    ::luminous::logging::exception_if_not(__VA_ARGS__, "\n    Source: ", LUMINOUS_SOURCE_LOCATION);
 
 #define LUMINOUS_ERROR(...) \
-    ::luminous::logging::error(__VA_ARGS__, "\n    Source: ", LUMINOUS_SOURCE_LOCATION)
+    ::luminous::logging::error(__VA_ARGS__, "\n    Source: ", LUMINOUS_SOURCE_LOCATION);
 #define LUMINOUS_ERROR_IF(...) \
-    ::luminous::logging::error_if(__VA_ARGS__, "\n    Source: ", LUMINOUS_SOURCE_LOCATION)
+    ::luminous::logging::error_if(__VA_ARGS__, "\n    Source: ", LUMINOUS_SOURCE_LOCATION);
 #define LUMINOUS_ERROR_IF_NOT(...) \
-    ::luminous::logging::error_if_not(__VA_ARGS__, "\n    Source: ", LUMINOUS_SOURCE_LOCATION)
+    ::luminous::logging::error_if_not(__VA_ARGS__, "\n    Source: ", LUMINOUS_SOURCE_LOCATION);

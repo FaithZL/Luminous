@@ -48,7 +48,9 @@ namespace luminous::compute {
             dsl::Function::push(function.get());
             def();
             dsl::Function::pop(function.get());
-            return KernelView{std::async(std::launch::async, [function = std::move(function), this] { return _compile_kernel(*function); })};
+            return KernelView{std::async(std::launch::async, [function = std::move(function), this] {
+                return _compile_kernel(*function);
+            })};
         }
 
         template<typename Def, std::enable_if_t<std::is_invocable_v<Def>, int> = 0>
