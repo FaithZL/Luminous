@@ -61,7 +61,6 @@ namespace luminous::metal {
         if (has_uniforms) {
             _os << ", constant Uniforms &uniforms";
         }
-        if (has_uniforms) { _os << ", constant Uniforms &uniforms"; }
         for (auto &&v : f.builtins()) {
             if (v->is_thread_id()) {
                 _os << ", ";

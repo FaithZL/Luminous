@@ -85,7 +85,6 @@ namespace luminous::metal {
         MetalCodegen codegen{os};
         codegen.emit(f);
         auto s = os.str();
-
         if (_context->should_print_generated_source()) {
             LUMINOUS_INFO("Generated source:\n", s);
         }
@@ -106,7 +105,7 @@ namespace luminous::metal {
             NSError *error = nullptr;
             auto library = [_handle newLibraryWithSource:@(s.c_str()) options:nullptr error:&error];
             if (error != nullptr && error.code != MTLLibraryErrorCompileWarning) {
-                LUMINOUS_EXCEPTION("Compilation failed, reason:\n", [error.description cStringUsingEncoding:NSUTF8StringEncoding]);
+                LUMINOUS_ERROR("Compilation failed, reason:\n", [error.description cStringUsingEncoding:NSUTF8StringEncoding]);
             }
 
             // Create PSO
