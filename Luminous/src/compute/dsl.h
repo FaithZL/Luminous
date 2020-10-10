@@ -38,7 +38,13 @@ namespace luminous::compute::dsl {
 
     public:
         explicit ExprBase(const Variable *variable) noexcept: _variable{variable} {}
+
         [[nodiscard]] const Variable *variable() const noexcept { return _variable; }
+
+        void assign(const ExprBase &another) const noexcept {
+            Function::current().add_statement(std::make_unique<AssignStmt>(AssignOp::ASSIGN, _variable, another._variable));
+        }
+
 
 #define MAKE_ASSIGN_OP_EXPR(op, op_tag)                                                 \
     void operator op(const ExprBase &rhs) const noexcept {                              \
@@ -104,72 +110,130 @@ namespace luminous::compute::dsl {
         Expr(T v) noexcept: ExprBase{Variable::make_temporary(type_desc<T>, std::make_unique<ValueExpr>(v))} {}
         Expr(ExprBase &&expr) noexcept: ExprBase{expr.variable()} {}
         Expr(const ExprBase &expr) noexcept: ExprBase{expr.variable()} {}
+
+        void operator=(const Expr<T> &e) const noexcept { assign(e); }
     };
 
     template<typename T, size_t N>
     struct Expr<std::array<T, N>> : public ExprBase {
+
         using Type = std::array<T, N>;
+        using ExprType = Expr<Type>;
+
         explicit Expr(const Variable *v) noexcept: ExprBase{v} {}
         Expr(ExprBase &&expr) noexcept: ExprBase{expr.variable()} {}
         Expr(const ExprBase &expr) noexcept: ExprBase{expr.variable()} {}
 
-        [[nodiscard]] auto operator[](const ExprBase &index) const noexcept {
-            return Expr<T>{Variable::make_temporary(type_desc<T>, std::make_unique<BinaryExpr>(BinaryOp::ACCESS, _variable, index.variable()))};
-        }
+        template<typename U>
+        [[nodiscard]] Expr<T> operator[](U &&index) const noexcept;
+
+        void operator=(const ExprType &e) const noexcept { assign(e); }
     };
 
     template<typename T>
     struct Expr<Vector<T, 2>> : public ExprBase {
+
         using Type = Vector<T, 2>;
+        using ExprType = Expr<Type>;
+
         Expr(Type v) noexcept: ExprBase{Variable::make_temporary(type_desc<Type>, std::make_unique<ValueExpr>(v))} {}
         explicit Expr(const Variable *v) noexcept: ExprBase{v} {}
         Expr(ExprBase &&expr) noexcept: ExprBase{expr.variable()} {}
         Expr(const ExprBase &expr) noexcept: ExprBase{expr.variable()} {}
-        [[nodiscard]] auto operator[](const ExprBase &index) const noexcept {
-            return Expr<T>{Variable::make_temporary(type_desc<T>, std::make_unique<BinaryExpr>(BinaryOp::ACCESS, _variable, index.variable()))};
-        }
-        [[nodiscard]] auto x() const noexcept { return Expr<T>{Variable::make_temporary(type_desc<T>, std::make_unique<MemberExpr>(_variable, "x"))}; }
-        [[nodiscard]] auto y() const noexcept { return Expr<T>{Variable::make_temporary(type_desc<T>, std::make_unique<MemberExpr>(_variable, "y"))}; }
-        [[nodiscard]] auto r() const noexcept { return x(); }
-        [[nodiscard]] auto g() const noexcept { return y(); }
+
+        template<typename U>
+        [[nodiscard]] Expr<T> operator[](U &&index) const noexcept;
+
+        Expr<T> x{Variable::make_temporary(type_desc<T>, std::make_unique<MemberExpr>(_variable, "x"))};
+        Expr<T> y{Variable::make_temporary(type_desc<T>, std::make_unique<MemberExpr>(_variable, "y"))};
+        Expr<T> r{Variable::make_temporary(type_desc<T>, std::make_unique<MemberExpr>(_variable, "x"))};
+        Expr<T> g{Variable::make_temporary(type_desc<T>, std::make_unique<MemberExpr>(_variable, "y"))};
+
+        void operator=(const ExprType &e) const noexcept { assign(e); }
     };
 
     template<typename T>
     struct Expr<Vector<T, 3>> : public ExprBase {
+
         using Type = Vector<T, 3>;
+        using ExprType = Expr<Type>;
+
         Expr(Type v) noexcept: ExprBase{Variable::make_temporary(type_desc<Type>, std::make_unique<ValueExpr>(v))} {}
         explicit Expr(const Variable *v) noexcept: ExprBase{v} {}
         Expr(ExprBase &&expr) noexcept: ExprBase{expr.variable()} {}
         Expr(const ExprBase &expr) noexcept: ExprBase{expr.variable()} {}
-        [[nodiscard]] auto operator[](const ExprBase &index) const noexcept {
-            return Expr<T>{Variable::make_temporary(type_desc<T>, std::make_unique<BinaryExpr>(BinaryOp::ACCESS, _variable, index.variable()))};
-        }
-        [[nodiscard]] auto x() const noexcept { return Expr<T>{Variable::make_temporary(type_desc<T>, std::make_unique<MemberExpr>(_variable, "x"))}; }
-        [[nodiscard]] auto y() const noexcept { return Expr<T>{Variable::make_temporary(type_desc<T>, std::make_unique<MemberExpr>(_variable, "y"))}; }
-        [[nodiscard]] auto z() const noexcept { return Expr<T>{Variable::make_temporary(type_desc<T>, std::make_unique<MemberExpr>(_variable, "z"))}; }
-        [[nodiscard]] auto r() const noexcept { return x(); }
-        [[nodiscard]] auto g() const noexcept { return y(); }
-        [[nodiscard]] auto b() const noexcept { return z(); }
+
+        template<typename U>
+        [[nodiscard]] Expr<T> operator[](U &&index) const noexcept;
+
+        Expr<T> x{Variable::make_temporary(type_desc<T>, std::make_unique<MemberExpr>(_variable, "x"))};
+        Expr<T> y{Variable::make_temporary(type_desc<T>, std::make_unique<MemberExpr>(_variable, "y"))};
+        Expr<T> z{Variable::make_temporary(type_desc<T>, std::make_unique<MemberExpr>(_variable, "z"))};
+        Expr<T> r{Variable::make_temporary(type_desc<T>, std::make_unique<MemberExpr>(_variable, "x"))};
+        Expr<T> g{Variable::make_temporary(type_desc<T>, std::make_unique<MemberExpr>(_variable, "y"))};
+        Expr<T> b{Variable::make_temporary(type_desc<T>, std::make_unique<MemberExpr>(_variable, "z"))};
+
+        void operator=(const ExprType &e) const noexcept { assign(e); }
     };
 
     template<typename T>
     struct Expr<Vector<T, 4>> : public ExprBase {
+
         using Type = Vector<T, 4>;
+        using ExprType = Expr<Type>;
+
         Expr(Type v) noexcept: ExprBase{Variable::make_temporary(type_desc<Type>, std::make_unique<ValueExpr>(v))} {}
         explicit Expr(const Variable *v) noexcept: ExprBase{v} {}
         Expr(ExprBase &&expr) noexcept: ExprBase{expr.variable()} {}
         Expr(const ExprBase &expr) noexcept: ExprBase{expr.variable()} {}
-        [[nodiscard]] auto operator[](const ExprBase &index) const noexcept {
-            return Expr<T>{Variable::make_temporary(type_desc<T>, std::make_unique<BinaryExpr>(BinaryOp::ACCESS, _variable, index.variable()))};
-        }
-        [[nodiscard]] auto x() const noexcept { return Expr<T>{Variable::make_temporary(type_desc<T>, std::make_unique<MemberExpr>(_variable, "x"))}; }
-        [[nodiscard]] auto y() const noexcept { return Expr<T>{Variable::make_temporary(type_desc<T>, std::make_unique<MemberExpr>(_variable, "y"))}; }
-        [[nodiscard]] auto z() const noexcept { return Expr<T>{Variable::make_temporary(type_desc<T>, std::make_unique<MemberExpr>(_variable, "z"))}; }
-        [[nodiscard]] auto w() const noexcept { return Expr<T>{Variable::make_temporary(type_desc<T>, std::make_unique<MemberExpr>(_variable, "w"))}; }
-        [[nodiscard]] auto r() const noexcept { return x(); }
-        [[nodiscard]] auto g() const noexcept { return y(); }
-        [[nodiscard]] auto b() const noexcept { return z(); }
-        [[nodiscard]] auto a() const noexcept { return w(); }
+
+        template<typename U>
+        [[nodiscard]] Expr<T> operator[](U &&index) const noexcept;
+
+        Expr<T> x{Variable::make_temporary(type_desc<T>, std::make_unique<MemberExpr>(_variable, "x"))};
+        Expr<T> y{Variable::make_temporary(type_desc<T>, std::make_unique<MemberExpr>(_variable, "y"))};
+        Expr<T> z{Variable::make_temporary(type_desc<T>, std::make_unique<MemberExpr>(_variable, "z"))};
+        Expr<T> w{Variable::make_temporary(type_desc<T>, std::make_unique<MemberExpr>(_variable, "w"))};
+        Expr<T> r{Variable::make_temporary(type_desc<T>, std::make_unique<MemberExpr>(_variable, "x"))};
+        Expr<T> g{Variable::make_temporary(type_desc<T>, std::make_unique<MemberExpr>(_variable, "y"))};
+        Expr<T> b{Variable::make_temporary(type_desc<T>, std::make_unique<MemberExpr>(_variable, "z"))};
+        Expr<T> a{Variable::make_temporary(type_desc<T>, std::make_unique<MemberExpr>(_variable, "w"))};
+
+        void operator=(const ExprType &e) const noexcept { assign(e); }
+    };
+
+    template<>
+    struct Expr<float3x3> : public ExprBase {
+
+        using Type = float3x3;
+        using ExprType = Expr<Type>;
+
+        Expr(Type v) noexcept: ExprBase{Variable::make_temporary(type_desc<Type>, std::make_unique<ValueExpr>(v))} {}
+        explicit Expr(const Variable *v) noexcept: ExprBase{v} {}
+        Expr(ExprBase &&expr) noexcept: ExprBase{expr.variable()} {}
+        Expr(const ExprBase &expr) noexcept: ExprBase{expr.variable()} {}
+
+        template<typename U>
+        [[nodiscard]] Expr<float3> operator[](U &&index) const noexcept;
+
+        void operator=(const ExprType &e) const noexcept { assign(e); }
+    };
+
+    template<>
+    struct Expr<float4x4> : public ExprBase {
+
+        using Type = float4x4;
+        using ExprType = Expr<Type>;
+
+        Expr(Type v) noexcept: ExprBase{Variable::make_temporary(type_desc<Type>, std::make_unique<ValueExpr>(v))} {}
+        explicit Expr(const Variable *v) noexcept: ExprBase{v} {}
+        Expr(ExprBase &&expr) noexcept: ExprBase{expr.variable()} {}
+        Expr(const ExprBase &expr) noexcept: ExprBase{expr.variable()} {}
+
+        template<typename U>
+        [[nodiscard]] Expr<float4> operator[](U &&index) const noexcept;
+
+        void operator=(const ExprType &e) const noexcept { assign(e); }
     };
 
     // Deduction guides
@@ -198,13 +262,60 @@ namespace luminous::compute::dsl {
 
     }
 
+    // Implementations of operator[]
+    template<typename T, size_t N>
+    template<typename U>
+    Expr<T> Expr<std::array<T, N>>::operator[](U &&index) const noexcept {
+        return Expr<T>{Variable::make_temporary(
+                type_desc<T>,
+                std::make_unique<BinaryExpr>(BinaryOp::ACCESS, _variable, detail::extract_variable(std::forward<U>(index))))};
+    }
+
+    template<typename T>
+    template<typename U>
+    Expr<T> Expr<Vector<T, 2>>::operator[](U &&index) const noexcept {
+        return Expr<T>{Variable::make_temporary(
+                type_desc<T>,
+                std::make_unique<BinaryExpr>(BinaryOp::ACCESS, _variable, detail::extract_variable(std::forward<U>(index))))};
+    }
+
+    template<typename T>
+    template<typename U>
+    Expr<T> Expr<Vector<T, 3>>::operator[](U &&index) const noexcept {
+        return Expr<T>{Variable::make_temporary(
+                type_desc<T>,
+                std::make_unique<BinaryExpr>(BinaryOp::ACCESS, _variable, detail::extract_variable(std::forward<U>(index))))};
+    }
+
+    template<typename T>
+    template<typename U>
+    Expr<T> Expr<Vector<T, 4>>::operator[](U &&index) const noexcept {
+        return Expr<T>{Variable::make_temporary(
+                type_desc<T>,
+                std::make_unique<BinaryExpr>(BinaryOp::ACCESS, _variable, detail::extract_variable(std::forward<U>(index))))};
+    }
+
+    template<typename U>
+    Expr<float3> Expr<float3x3>::operator[](U &&index) const noexcept {
+        return Expr<float3>{Variable::make_temporary(
+                type_desc<float3>,
+                std::make_unique<BinaryExpr>(BinaryOp::ACCESS, _variable, detail::extract_variable(std::forward<U>(index))))};
+    }
+
+    template<typename U>
+    Expr<float4> Expr<float4x4>::operator[](U &&index) const noexcept {
+        return Expr<float4>{Variable::make_temporary(
+                type_desc<float4>,
+                std::make_unique<BinaryExpr>(BinaryOp::ACCESS, _variable, detail::extract_variable(std::forward<U>(index))))};
+    }
 
     template<typename T>
     struct Var : public Expr<std::decay_t<T>> {
 
         using ExprType = Expr<std::decay_t<T>>;
 
-        template<typename ...Args, std::enable_if_t<std::negation_v<std::disjunction<IsArray<std::decay_t<Args>>...>>, int> = 0>
+        template<typename ...Args,
+                std::enable_if_t<std::negation_v<std::disjunction<IsArray<std::decay_t<Args>>...>>, int> = 0>
         Var(Args &&...args) noexcept : ExprType{Variable::make_local_variable(type_desc<T>)} {
             std::vector<const Variable *> init{detail::extract_variable(std::forward<Args>(args))...};
             Function::current().add_statement(std::make_unique<DeclareStmt>(ExprType::_variable, std::move(init)));
@@ -244,7 +355,8 @@ namespace luminous::compute::dsl {
     };
 
 // Deduction guides
-    template<typename T, std::enable_if_t<!is_expr<std::decay_t<T>> && !is_array<std::remove_cv_t<T>>, int> = 0>
+    template<typename T,
+            std::enable_if_t<!is_expr<std::decay_t<T>> && !is_array<std::remove_cv_t<T>>, int> = 0>
     Var(T &&) -> Var<std::decay_t<T>>;
 
     template<typename T>
@@ -328,11 +440,17 @@ namespace luminous::compute::dsl {
 
 #undef MAKE_BINARY_OP
 
-    inline auto thread_id() noexcept { return Expr<uint>{Variable::make_builtin(VariableTag::THREAD_ID)}; }
-    inline auto thread_xy() noexcept { return Expr<uint2>{Variable::make_builtin(VariableTag::THREAD_XY)}; }
+    inline auto thread_id() noexcept {
+        return Expr<uint>{Variable::make_builtin(VariableTag::THREAD_ID)};
+    }
+    inline auto thread_xy() noexcept {
+        return Expr<uint2>{Variable::make_builtin(VariableTag::THREAD_XY)};
+    }
 
     template<typename T>
-    inline auto uniform(const T *p_data) noexcept { return Expr<T>{Variable::make_uniform_argument(type_desc<T>, p_data)}; }
+    inline auto uniform(const T *p_data) noexcept {
+        return Expr<T>{Variable::make_uniform_argument(type_desc<T>, p_data)};
+    }
 
     template<typename T, std::enable_if_t<std::negation_v<std::is_pointer<T>>, int> = 0>
     inline auto immutable(T data) noexcept {
@@ -348,21 +466,21 @@ namespace luminous::compute::dsl {
 #define MAP_ARGUMENT_TO_TRUE_TYPE_DECLVAL(arg) std::declval<TT##arg &>()
 #define MAP_ARGUMENT_TO_VARIABLE(arg) expr_##arg.variable()
 
-#define MAKE_BUILTIN_FUNCTION_DEF(func, true_func, ...)                                                           \
+#define MAKE_BUILTIN_FUNCTION_DEF(func, true_func, ...)                                                              \
 template<LUMINOUS_MAP_LIST(MAP_ARGUMENT_TO_TEMPLATE_ARGUMENT, __VA_ARGS__)>                                          \
 inline auto func(LUMINOUS_MAP_LIST(MAP_ARGUMENT_TO_ARGUMENT, __VA_ARGS__)) noexcept {                                \
     LUMINOUS_MAP(MAP_ARGUMENT_TO_EXPR, __VA_ARGS__)                                                                  \
     LUMINOUS_MAP(MAP_ARGUMENT_TO_TRUE_TYPE, __VA_ARGS__)                                                             \
     using R = std::decay_t<decltype(true_func(LUMINOUS_MAP_LIST(MAP_ARGUMENT_TO_TRUE_TYPE_DECLVAL, __VA_ARGS__)))>;  \
-    return Expr<R>{Variable::make_temporary(type_desc<R>, std::make_unique<CallExpr>(                             \
+    return Expr<R>{Variable::make_temporary(type_desc<R>, std::make_unique<CallExpr>(                                \
         #func, std::vector<const Variable *>{LUMINOUS_MAP_LIST(MAP_ARGUMENT_TO_VARIABLE, __VA_ARGS__)}))};           \
 }
 
-#define MAKE_BUILTIN_VOID_FUNCTION_DEF(func, ...)                                                                 \
+#define MAKE_BUILTIN_VOID_FUNCTION_DEF(func, ...)                                                                    \
 template<LUMINOUS_MAP_LIST(MAP_ARGUMENT_TO_TEMPLATE_ARGUMENT, __VA_ARGS__)>                                          \
 inline void func(LUMINOUS_MAP_LIST(MAP_ARGUMENT_TO_ARGUMENT, __VA_ARGS__)) noexcept {                                \
     LUMINOUS_MAP(MAP_ARGUMENT_TO_EXPR, __VA_ARGS__)                                                                  \
-    Function::current().add_statement(std::make_unique<ExprStmt>(std::make_unique<CallExpr>(                      \
+    Function::current().add_statement(std::make_unique<ExprStmt>(std::make_unique<CallExpr>(                         \
         #func, std::vector<const Variable *>{LUMINOUS_MAP_LIST(MAP_ARGUMENT_TO_VARIABLE, __VA_ARGS__)})));           \
 }
 
@@ -495,8 +613,8 @@ template<typename T>
 
 }
 
-#define LUMINOUS_STRUCT_BEGIN(S)                                                                    \
-namespace luminous::compute::dsl {                                                                  \
+#define LUMINOUS_STRUCT_BEGIN(S)                                                                 \
+namespace luminous::compute::dsl {                                                               \
     template<>                                                                                   \
     struct Structure<S> {                                                                        \
         [[nodiscard]] static TypeDesc *desc() noexcept {                                         \
@@ -508,22 +626,21 @@ namespace luminous::compute::dsl {                                              
                 td.member_names.clear();                                                         \
                 td.member_types.clear();                                                         \
 
-#define LUMINOUS_STRUCT_MEMBER(member)                                                              \
+#define LUMINOUS_STRUCT_MEMBER(member)                                                           \
                 td.member_names.emplace_back(#member);                                           \
                 td.member_types.emplace_back(type_desc<decltype(std::declval<This>().member)>);  \
 
-#define LUMINOUS_STRUCT_END()                                                                       \
+#define LUMINOUS_STRUCT_END()                                                                    \
             });                                                                                  \
             return &td;                                                                          \
         }                                                                                        \
     };                                                                                           \
 }                                                                                                \
 
-#define LUMINOUS_STRUCT_MAP_MEMBER_NAME_TO_EXPR(name)                                                                     \
-    [[nodiscard]] auto name() const noexcept {                                                                         \
-        using R = std::decay_t<decltype(std::declval<Type>().name)>;                                                   \
-        return Expr<R>{Variable::make_temporary(type_desc<R>, std::make_unique<MemberExpr>(this->_variable, #name))};  \
-    }
+#define LUMINOUS_STRUCT_MAP_MEMBER_NAME_TO_EXPR(name)                                           \
+    Expr<std::decay_t<decltype(std::declval<Type>().name)>> name{                               \
+        Variable::make_temporary(type_desc<std::decay_t<decltype(std::declval<Type>().name)>>,  \
+                                 std::make_unique<MemberExpr>(ExprBase::_variable, #name))};    \
 
 #define LUMINOUS_STRUCT_SPECIALIZE_EXPR(S, ...)                         \
 namespace luminous::compute::dsl {                                      \

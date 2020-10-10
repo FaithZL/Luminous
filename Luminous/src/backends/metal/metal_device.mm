@@ -87,6 +87,7 @@ namespace luminous::metal {
         auto s = os.str();
         if (_context->should_print_generated_source()) {
             LUMINOUS_INFO("Generated source:\n", s);
+            LUMINOUS_INFO("source end");
         }
 
         auto digest = SHA1{s}.digest();

@@ -14,48 +14,13 @@
 
 using namespace std;
 
-//using namespace luminous;
+using namespace luminous;
 
 using namespace luminous::compute;
 
 using namespace luminous::compute::dsl;
 
-void test() {
-    int v1{0};
-    float v2{static_cast<float>(0.0f / +0.0f)};
-    if (((v1 > 0) && (v2 < 0))) {
-        v2 = 0;
-    } else if ((v2 > 0)) {
-        v1 = 0;
-    } else {
-        v1 = 0;
-    }
-    while (v1) {
-        v1 += 1;
-    }
-    luminous::float2 v3{luminous::make_float2(0)};
-    float v4{sqrt((v3.x))};
-    float v5{(0x1.921fb6p+2f * (v3.y))};
-    luminous::float3 v6{luminous::make_float3((v4 * cos(v5)), (v4 * sin(v5)), sqrt((0x1p+0f - (v3.x))))};
-    switch (v1) {
-        case 1: {
-            v1 = 0;
-            break;
-        }
-        case 2: {
-            v2 = 0;
-            break;
-        }
-        default: {
-            break;
-        }
-    }
-    int v7{5};
-    do {
-        v7 = 5;
-        break;
-    } while ((v1 < 10));
-}
+
 
 template<typename Def, std::enable_if_t<std::is_invocable_v<Def>, int> = 0>
 void fake_compile_kernel(std::string name, Def &&def) {
@@ -70,15 +35,61 @@ void fake_compile_kernel(std::string name, Def &&def) {
 }
 
 inline Expr<luminous::float3> cosine_sample_hemisphere(Expr<luminous::float2> u) {
-    Var r = sqrt(u.x());
-    Var phi = static_cast<float>(2.0f * M_PI) * u.y();
-    return make_float3(r * cos(phi), r * sin(phi), sqrt(1.0f - u.x()));
+    Var r = sqrt(u.x);
+    Var phi = static_cast<float>(2.0f * M_PI) * u.y;
+    return make_float3(r * cos(phi), r * sin(phi), sqrt(1.0f - u.x));
+}
+
+
+struct alignas(16) Struct_14 {
+    float origin_x;
+    float origin_y;
+    float origin_z;
+    float min_distance;
+    float direction_x;
+    float direction_y;
+    float direction_z;
+    float max_distance;
+};
+
+void test() {
+    Struct_14 v1{};
+    (v1.origin_x) = 0x0p+0f;
+    auto v2{(v1.origin_x)};
+    int v3{0};
+    if (((v2 > 0) && (v3 < 0))) {
+        v3 = 0;
+    } else if ((v3 > 0)) {
+        v2 = 0;
+    } else {
+        v2 = 0;
+    }
+    int v4{-1};
+    while (true) {
+        int v5{v4};
+        if (!(v5 < 0)) {
+            break;
+        }
+        v4 += 1;
+        v4 += 2;
+    }
+    float2 v6 = luminous::make_float2(0);
+
+    v6[0] = 0x1.68p+6f;
+    float v7{sqrt((v6.x))};
+    float v8{(0x1.921fb6p+2f * (v6.y))};
+    float3 v9{luminous::make_float3((v7 * cos(v8)), (v7 * sin(v8)), sqrt((0x1p+0f - (v6.x))))};
+    v9[2] = 0x1.4p+6f;
 }
 
 int main() {
 
     fake_compile_kernel("test", [](){
-        Var<int> a = 1;
+
+        Var<Ray> ray;
+        ray.origin_x = 0;
+
+        Var<int> a = ray.origin_x;
         Var b = 0;
         If(a > 0 && b < 0) {
             b = 0;
@@ -98,26 +109,13 @@ int main() {
             x += 1;
             x += 2;
         };
-        While(a) {
-            a += 1;
-        };
 
         Var<luminous::float2> c = make_float2(0);
 
+        c[0] = 90;
+
         Var aa = cosine_sample_hemisphere(c);
-
-        Switch(a) {
-            Case(1) {
-                a = 0;
-            };
-            Case(2) {
-                b = 0;
-            };
-            Default {
-
-            };
-        };
-        Var i = 5;
+        aa[3] = 80;
 
     });
 

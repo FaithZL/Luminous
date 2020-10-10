@@ -26,12 +26,16 @@ namespace luminous::compute::dsl {
     }
 
     void Function::_use_structure_type(const TypeDesc *type) noexcept {
-        if (type == nullptr || type->type == TypeCatalog::UNKNOWN) { return; }
+        if (type == nullptr || type->type == TypeCatalog::UNKNOWN) {
+            return;
+        }
         if (type->type == TypeCatalog::ARRAY) {
             _use_structure_type(type->element_type);
         } else if (type->type == TypeCatalog::STRUCTURE && _used_struct_types.find(type) == _used_struct_types.cend()) {
             _used_struct_types.emplace(type);
-            for (auto member_type : type->member_types) { _use_structure_type(member_type); }
+            for (auto member_type : type->member_types) {
+                _use_structure_type(member_type);
+            }
         }
     }
 
@@ -51,23 +55,34 @@ namespace luminous::compute::dsl {
     }
 
     void Function::mark_texture_read(const Texture *texture) noexcept {
-        if (auto iter = _texture_usages.find(texture); iter == _texture_usages.cend()) { _texture_usages.emplace(texture, texture_read_bit); }
-        else { iter->second |= texture_read_bit; }
+        if (auto iter = _texture_usages.find(texture); iter == _texture_usages.cend()) {
+            _texture_usages.emplace(texture, texture_read_bit);
+        } else {
+            iter->second |= texture_read_bit;
+        }
     }
 
     void Function::mark_texture_write(const Texture *texture) noexcept {
-        if (auto iter = _texture_usages.find(texture); iter == _texture_usages.cend()) { _texture_usages.emplace(texture, texture_write_bit); }
-        else { iter->second |= texture_write_bit; }
+        if (auto iter = _texture_usages.find(texture); iter == _texture_usages.cend()) {
+            _texture_usages.emplace(texture, texture_write_bit);
+        } else {
+            iter->second |= texture_write_bit;
+        }
     }
 
     void Function::mark_texture_sample(const Texture *texture) noexcept {
-        if (auto iter = _texture_usages.find(texture); iter == _texture_usages.cend()) { _texture_usages.emplace(texture, texture_sample_bit); }
-        else { iter->second |= texture_sample_bit; }
+        if (auto iter = _texture_usages.find(texture); iter == _texture_usages.cend()) {
+            _texture_usages.emplace(texture, texture_sample_bit);
+        } else {
+            iter->second |= texture_sample_bit;
+        }
     }
 
     uint32_t Function::texture_usage(const Texture *texture) const noexcept {
         auto iter = _texture_usages.find(texture);
-        if (iter == _texture_usages.cend()) { return 0u; }
+        if (iter == _texture_usages.cend()) {
+            return 0u;
+        }
         return iter->second;
     }
 

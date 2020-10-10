@@ -65,7 +65,6 @@ namespace luminous::compute::dsl {
         void visit(const DeclareStmt *declare_stmt) override;
         void visit(const IfStmt *if_stmt) override;
         void visit(const WhileStmt *while_stmt) override;
-        void visit(const DoWhileStmt *do_while_stmt) override;
         void visit(const ExprStmt *expr_stmt) override;
         void visit(const SwitchStmt *switch_stmt) override;
         void visit(const SwitchCaseStmt *case_stmt) override;

@@ -41,7 +41,9 @@ namespace luminous::compute::dsl {
         for (auto &&v : Function::current().arguments()) {
             if (v->is_immutable_argument() &&
                 v->immutable_data().size() == data.size() &&
-                std::memcmp(v->immutable_data().data(), data.data(), data.size()) == 0) { return v.get(); }
+                std::memcmp(v->immutable_data().data(), data.data(), data.size()) == 0) {
+                return v.get();
+            }
         }
         auto v = std::make_unique<Variable>();
         v->_type = type;
@@ -62,19 +64,26 @@ namespace luminous::compute::dsl {
     const Variable *Variable::make_builtin(VariableTag tag) noexcept {
         assert(tag == VariableTag::THREAD_ID || tag == VariableTag::THREAD_XY);
         for (auto &&v : Function::current().builtins()) {
-            if (v->tag() == tag) { return v.get(); }
+            if (v->tag() == tag) {
+                return v.get();
+            }
         }
         auto v = std::make_unique<Variable>();
         v->_tag = tag;
         v->_uid = Function::current().next_uid();
-        if (tag == VariableTag::THREAD_ID) { v->_type = type_desc<uint>; }
-        else if (tag == VariableTag::THREAD_XY) { v->_type = type_desc<uint2>; }
+        if (tag == VariableTag::THREAD_ID) {
+            v->_type = type_desc<uint>;
+        } else if (tag == VariableTag::THREAD_XY) {
+            v->_type = type_desc<uint2>;
+        }
         return Function::current().add_builtin(std::move(v));
     }
 
     const Variable *Variable::make_buffer_argument(const TypeDesc *type, const std::shared_ptr<Buffer> &buffer) noexcept {
         for (auto &&v : Function::current().arguments()) {
-            if (v->is_buffer_argument() && v->buffer() == buffer.get()) { return v.get(); }
+            if (v->is_buffer_argument() && v->buffer() == buffer.get()) {
+                return v.get();
+            }
         }
         auto v = std::make_unique<Variable>();
         v->_type = type;
