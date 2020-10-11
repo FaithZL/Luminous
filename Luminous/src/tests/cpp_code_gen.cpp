@@ -89,33 +89,33 @@ int main() {
         Var<Ray> ray;
         ray.origin_x = 0;
 
-        Var<int> a = ray.origin_x;
-        Var b = 0;
-        If(a > 0 && b < 0) {
-            b = 0;
-        } Elif (b > 0) {
-            a = 0;
-        } Else {
-            a = 0;
-        };
-
-
-        auto foo = [&](Expr<int> x) {
-            Var xx = x;
-            return xx < 0;
-        };
-        Var x = -1;
-        While (foo(x)) {
-            x += 1;
-            x += 2;
-        };
-
-        Var<luminous::float2> c = make_float2(0);
-
-        c[0] = 90;
-
-        Var aa = cosine_sample_hemisphere(c);
-        aa[3] = 80;
+//        Var<int> a = ray.origin_x;
+//        Var b = 0;
+//        If(a > 0 && b < 0) {
+//            b = 0;
+//        } Elif (b > 0) {
+//            a = 0;
+//        } Else {
+//            a = 0;
+//        };
+//
+//
+//        auto foo = [&](Expr<int> x) {
+//            Var xx = x;
+//            return xx < 0;
+//        };
+//        Var x = -1;
+//        While (foo(x)) {
+//            x += 1;
+//            x += 2;
+//        };
+//
+//        Var<luminous::float2> c = make_float2(0);
+//
+//        c[0] = 90;
+//
+//        Var aa = cosine_sample_hemisphere(c);
+//        aa[3] = 80;
 
     });
 

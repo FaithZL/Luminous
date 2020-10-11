@@ -27,9 +27,7 @@ int main(int argc, char *argv[]) {
     std::vector<float> input(buffer_size);
     std::mt19937 rng{std::random_device{}()};
     std::uniform_real_distribution<float> distribution{0.0f, 1.0f};
-    for (auto &&f : input) {
-        f = distribution(rng);
-    }
+    for (auto &&f : input) { f = distribution(rng); }
 
     auto input_copy = input;
     std::shuffle(input_copy.begin(), input_copy.end(), rng);
@@ -46,6 +44,42 @@ int main(int argc, char *argv[]) {
             buffer_b[tid] = scale_value(uniform(&scale), buffer_a[tid]);
         };
     });
+
+    auto launch_index = 0u;
+
+    for (auto i = 0; i < 20; i++) {
+        device->launch([&](Dispatcher &dispatch) {
+            scale = 3.0f;
+            dispatch(buffer_a.copy_from(input_copy.data()));
+            dispatch(kernel.parallelize(buffer_size), [&] { LUMINOUS_INFO("Kernel #", launch_index++, " finished."); });
+        });
+    }
+
+    std::vector<float> output(buffer_size);
+    device->launch([&](Dispatcher &d) {
+        scale = 2.0f;
+        d(buffer_a.copy_from(input.data()));
+        d(kernel.parallelize(buffer_size), [&] { LUMINOUS_INFO("Kernel #", launch_index++, " finished."); });
+        d(buffer_b.copy_to(output.data()));
+    });
+
+    for (auto i = 0; i < 20; i++) {
+        device->launch([&](Dispatcher &d) {
+            scale = 3.0f;
+            d(buffer_a.copy_from(input_copy.data()));
+            d(kernel.parallelize(buffer_size), [&] { LUMINOUS_INFO("Kernel #", launch_index++, " finished."); });
+        });
+    }
+
+    device->synchronize();
+
+    LUMINOUS_INFO("Done.");
+    for (auto i = 0; i < buffer_size; i++) {
+        if (output[i] != input[i] * 2.0f) {
+            LUMINOUS_WARNING("Fuck! Expected ", input[i] * 2.0f, ", got ", output[i]);
+        }
+    }
+    LUMINOUS_INFO("Results checked.");
 
     return 0;
 }
