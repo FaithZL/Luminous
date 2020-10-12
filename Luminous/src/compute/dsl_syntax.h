@@ -120,8 +120,16 @@ namespace luminous::compute::dsl {
         }
     };
 
+    struct LoggerStmtBuilder {
+        template<typename F>
+        void operator<<(F &&f) noexcept {
+
+        }
+    };
+
 #define Switch(...) ::luminous::compute::dsl::SwitchStmtBuilder{__VA_ARGS__} << [&]()
 #define Case(...) ::luminous::compute::dsl::SwitchCaseStmtBuilder{__VA_ARGS__} << [&]()
 #define Default ::luminous::compute::dsl::SwitchDefaultStmtBuilder{} << [&]()
+#define Print(...) ::luminous::compute::dsl::LoggerStmtBuilder{__VA_ARGS__} << [&]()
 
 }

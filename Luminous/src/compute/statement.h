@@ -140,7 +140,8 @@ void accept(StmtVisitor &visitor) const override { visitor.visit(this); }  \
             Function::current().with_scope(_true_branch.get(), std::forward<True>(true_branch));
         }
 
-        template<typename True, typename False, std::enable_if_t<std::conjunction_v<std::is_invocable<True>, std::is_invocable<False>>, int> = 0>
+        template<typename True, typename False,
+                std::enable_if_t<std::conjunction_v<std::is_invocable<True>, std::is_invocable<False>>, int> = 0>
         IfStmt(const Variable *cond, True &&true_branch, False &&false_branch) noexcept
                 : _condition{cond},
                   _true_branch{std::make_unique<ScopeStmt>()},
@@ -238,6 +239,14 @@ void accept(StmtVisitor &visitor) const override { visitor.visit(this); }  \
         explicit ExprStmt(std::unique_ptr<Expression> expr) noexcept: _expr{std::move(expr)} {}
         [[nodiscard]] const Expression *expr() const noexcept { return _expr.get(); }
         MAKE_STATEMENT_ACCEPT_VISITOR()
+    };
+
+    class LoggerStmt : public Statement {
+
+    private:
+
+    public:
+
     };
 
 #undef MAKE_STATEMENT_ACCEPT_VISITOR
