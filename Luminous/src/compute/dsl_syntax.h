@@ -131,5 +131,7 @@ namespace luminous::compute::dsl {
 #define Case(...) ::luminous::compute::dsl::SwitchCaseStmtBuilder{__VA_ARGS__} << [&]()
 #define Default ::luminous::compute::dsl::SwitchDefaultStmtBuilder{} << [&]()
 #define Print(...) ::luminous::compute::dsl::LoggerStmtBuilder{__VA_ARGS__} << [&]()
+#define G_INFO(...) ::luminous::compute::dsl::LoggerStmtBuilder{__VA_ARGS__} << [&]()
+
 
 }
