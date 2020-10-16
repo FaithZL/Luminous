@@ -19,6 +19,7 @@
 #include <compute/device.h>
 
 namespace luminous::render {
+
 #define LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME(BaseClass)                       \
     class BaseClass;                                                                      \
     namespace detail {                                                                    \
@@ -26,9 +27,66 @@ namespace luminous::render {
         auto plugin_base_class_match(T *) { return static_cast<BaseClass *>(nullptr); }   \
                                                                                           \
         template<typename T, std::enable_if_t<std::is_same_v<BaseClass, T>, int> = 0>     \
-        constexpr std::string_view plguin_base_class_name(T *) {                          \
+        constexpr std::string_view plugin_base_class_name(T *) {                          \
             using namespace std::string_view_literals;                                    \
             return #BaseClass""sv;                                                        \
         }                                                                                 \
     }
+
+
+LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME(Filter)
+LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME(Film)
+LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME(Camera)
+LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME(Shape)
+LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME(Transform)
+LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME(Material)
+LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME(Integrator)
+LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME(Sampler)
+
+#undef LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME
+
+    using luminous::compute::Device;
+
+    class Plugin : public Noncopyable {
+    private:
+        Device *_device{nullptr};
+
+    public:
+        Plugin(Device *device, const nloJson &) noexcept
+        : _device{device} {
+
+        }
+
+        virtual ~Plugin() noexcept = default;
+
+        [[nodiscard]] Device *device() const noexcept {
+            return _device;
+        }
+
+        template<typename T>
+        using PluginBaseClass = std::remove_pointer_t<decltype(detail::plugin_base_class_match(static_cast<T *>(nullptr)))>;
+
+        template<typename T>
+        static constexpr auto plugin_base_class_name() noexcept {
+            return detail::plugin_base_class_name(static_cast<PluginBaseClass<T> *>(nullptr));
+        }
+
+        template<typename T>
+        [[nodiscard]] static std::unique_ptr<T> create(
+                Device *device,
+                std::string_view derived_name_pascal_case,
+                const nloJson &params) {
+
+            auto base_name = pascal_to_snake_case(plugin_base_class_name<T>());
+            auto derived_name = pascal_to_snake_case(derived_name_pascal_case);
+            auto plugin_dir = device->context().runtime_path("bin") / "plugins";
+            using PluginCreator = T *(Device *, const nloJson &);
+            auto moduleName = serialize("luminous-", base_name, "-", derived_name);
+            auto creator = device->context().load_dynamic_function<PluginCreator>(plugin_dir,
+                                                                                  moduleName,
+                                                                                  "create");
+            return std::unique_ptr<T>{creator(device, params)};
+        }
+    };
+
 }
