@@ -90,3 +90,10 @@ LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME(Sampler)
     };
 
 }
+
+#define LUMINOUS_EXPORT_PLUGIN_CREATOR(PluginClass)                                                                                            \
+    extern "C" LUMINOUS_EXPORT ::luminous::render::Plugin *create(::luminous::compute::Device *device,                                         \
+                                                            const nlojson &params) {                                                           \
+        LUMINOUS_INFO("Creating instance of class ", #PluginClass, ", category: ", ::luminous::render::plugin_base_class_name<PluginClass>()); \
+        return new PluginClass{device, params};                                                                                                \
+    }
