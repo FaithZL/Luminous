@@ -117,7 +117,10 @@ namespace luminous::metal {
             desc.label = @(f.name().c_str());
 
             error = nullptr;
-            pso = [_handle newComputePipelineStateWithDescriptor:desc options:MTLPipelineOptionNone reflection:nullptr error:&error];
+            pso = [_handle newComputePipelineStateWithDescriptor:desc
+                                                         options:MTLPipelineOptionNone
+                                                      reflection:nullptr
+                                                           error:&error];
             if (error != nullptr) {
                 LUMINOUS_WARNING("Error occurred while creating pipeline state object, reason:");
                 NSLog(@"%@", error);

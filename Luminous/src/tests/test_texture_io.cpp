@@ -38,10 +38,10 @@ int main(int argc, char *argv[]) {
         };
     });
 
-    device->launch([&](Dispatcher &dispatch) {
-        dispatch(kernel.parallelize(make_uint2(width, height)));
-        dispatch(ldr_texture.save(context.working_path("HelloWorld.tga")));
-        dispatch(hdr_texture.save(context.working_path("HelloWorld.exr")));
+    device->launch([&](Dispatcher &dispatcher) {
+        dispatcher.exec(kernel.parallelize(make_uint2(width, height)));
+        dispatcher.exec(ldr_texture.save(context.working_path("HelloWorld.tga")));
+        dispatcher.exec(hdr_texture.save(context.working_path("HelloWorld.exr")));
     });
     device->synchronize();
 }
