@@ -82,15 +82,22 @@ namespace luminous::compute {
                 const BufferView<float4x4> &transforms,
                 bool is_static) = 0;
 
-        template<typename Work, std::enable_if_t<std::is_invocable_v<Work, Dispatcher &>, int> = 0>
+        template<typename Work,
+                std::enable_if_t<std::is_invocable_v<Work, Dispatcher &>, int> = 0>
         void launch(Work &&work) {
-            _launch([&work, this](Dispatcher &dispatch) { dispatch(work); });
+            _launch([&work, this](Dispatcher &dispatcher) {
+                dispatcher.exec(work);
+            });
         }
 
-        template<typename Work, typename Callback, std::enable_if_t<std::conjunction_v<
-                std::is_invocable<Work, Dispatcher &>, std::is_invocable<Callback>>, int> = 0>
+        template<typename Work,
+                typename Callback,
+                std::enable_if_t<std::conjunction_v<std::is_invocable<Work, Dispatcher &>,
+                        std::is_invocable<Callback>>, int> = 0>
         void launch(Work &&work, Callback &&cb) {
-            _launch([&work, this, &cb](Dispatcher &dispatch) { dispatch(work, cb); });
+            _launch([&work, this, &cb](Dispatcher &dispatcher) {
+                dispatcher.exec(work, cb);
+            });
         }
 
         virtual void synchronize() = 0;

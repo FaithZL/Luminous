@@ -48,26 +48,26 @@ int main(int argc, char *argv[]) {
     auto launch_index = 0u;
 
     for (auto i = 0; i < 20; i++) {
-        device->launch([&](Dispatcher &dispatch) {
+        device->launch([&](Dispatcher &dispatcher) {
             scale = 3.0f;
-            dispatch(buffer_a.copy_from(input_copy.data()));
-            dispatch(kernel.parallelize(buffer_size), [&] { LUMINOUS_INFO("Kernel #", launch_index++, " finished."); });
+            dispatcher.exec(buffer_a.copy_from(input_copy.data()));
+            dispatcher.exec(kernel.parallelize(buffer_size), [&] { LUMINOUS_INFO("Kernel #", launch_index++, " finished."); });
         });
     }
 
     std::vector<float> output(buffer_size);
-    device->launch([&](Dispatcher &d) {
+    device->launch([&](Dispatcher &dispatcher) {
         scale = 2.0f;
-        d(buffer_a.copy_from(input.data()));
-        d(kernel.parallelize(buffer_size), [&] { LUMINOUS_INFO("Kernel #", launch_index++, " finished."); });
-        d(buffer_b.copy_to(output.data()));
+        dispatcher.exec(buffer_a.copy_from(input.data()));
+        dispatcher.exec(kernel.parallelize(buffer_size), [&] { LUMINOUS_INFO("Kernel #", launch_index++, " finished."); });
+        dispatcher.exec(buffer_b.copy_to(output.data()));
     });
 
     for (auto i = 0; i < 20; i++) {
-        device->launch([&](Dispatcher &d) {
+        device->launch([&](Dispatcher &dispatcher) {
             scale = 3.0f;
-            d(buffer_a.copy_from(input_copy.data()));
-            d(kernel.parallelize(buffer_size), [&] { LUMINOUS_INFO("Kernel #", launch_index++, " finished."); });
+            dispatcher.exec(buffer_a.copy_from(input_copy.data()));
+            dispatcher.exec(kernel.parallelize(buffer_size), [&] { LUMINOUS_INFO("Kernel #", launch_index++, " finished."); });
         });
     }
 
