@@ -40,8 +40,8 @@ int main(int argc, char *argv[]) {
 
     device->launch([&](Dispatcher &dispatcher) {
         dispatcher.exec(kernel.parallelize(make_uint2(width, height)));
-        dispatcher.exec(ldr_texture.save(context.working_path("HelloWorld.tga")));
-        dispatcher.exec(hdr_texture.save(context.working_path("HelloWorld.exr")));
+        dispatcher.exec(ldr_texture.save(context.working_path("test.png")));
+        dispatcher.exec(hdr_texture.save(context.working_path("test.hdr")));
     });
     device->synchronize();
 }
