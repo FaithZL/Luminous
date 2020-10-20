@@ -6,10 +6,12 @@
 
 #include <render/plugin.h>
 #include <compute/dsl.h>
+//#include <map>
 
 namespace luminous::render {
 
-    using compute::Device;
+    using luminous::compute::Device;
+    using luminous::compute::dsl::Expr;
 
     class Filter : public Plugin {
     private:
@@ -29,6 +31,7 @@ namespace luminous::render {
         [[nodiscard]] virtual float _weight_1d(float offset) const noexcept = 0;
 
         // (position, weight)
-        [[nodiscard]] virtual std::pair<Expr<float2>, Expr<float>> importance_sample_pixel_position(Expr<uint2> p, Expr<float2> u) = 0;
+        [[nodiscard]] virtual std::pair<Expr<float2>, Expr<float>> importance_sample_pixel_position(Expr<uint2> p,
+                                                                                                    Expr<float2> u) = 0;
     };
 }
