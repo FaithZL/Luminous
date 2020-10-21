@@ -6,6 +6,7 @@
 #include <compute/dsl_syntax.h>
 #include <compute/codegen.h>
 #include <compute/buffer.h>
+#include "render/include/sampling.h"
 #include "compute/device.h"
 #include "compute/function.h"
 //#include "compute/ray.h"
@@ -86,8 +87,9 @@ int main() {
 
     fake_compile_kernel("test", [](){
 
-        Var<Ray> ray;
-        ray.origin_x = 0;
+        Var a = luminous::render::sampling::cosine_sample_hemisphere(make_float2(0,0));
+//        Var<Ray> ray;
+//        ray.origin_x = 0;
 
 //        Var<int> a = ray.origin_x;
 //        Var b = 0;
