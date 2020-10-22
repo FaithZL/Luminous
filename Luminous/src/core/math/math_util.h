@@ -16,6 +16,8 @@ inline namespace constant {
 
 constexpr auto Pi = 3.14159265358979323846264338327950288f;
 constexpr auto _2Pi = Pi * 2;
+constexpr auto inv2Pi = 1 / _2Pi;
+constexpr auto inv4Pi = 1 / (4 * Pi);
 constexpr auto PiOver2 = 1.57079632679489661923132169163975144f;
 constexpr auto PiOver4 = 0.785398163397448309615660845819875721f;
 constexpr auto invPi = 0.318309886183790671537767526745028724f;

@@ -87,7 +87,10 @@ int main() {
 
     fake_compile_kernel("test", [](){
 
-        Var a = luminous::render::sampling::cosine_sample_hemisphere(make_float2(0,0));
+//        Var a = luminous::render::sampling::cosine_sample_hemisphere(make_float2(0,0));
+        Expr a =luminous::render::sampling::power_heuristic(1,1,1,1);
+
+        Var b = a;
 //        Var<Ray> ray;
 //        ray.origin_x = 0;
 
