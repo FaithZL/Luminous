@@ -631,7 +631,11 @@ namespace luminous::compute::dsl {
                 _os << ")";
                 break;
             case TextureOp::SAMPLE:
-                LUMINOUS_ERROR("Not implemented!");
+//                LUMINOUS_ERROR("Not implemented!");
+                _emit_variable(tex_expr->texture());
+                _os << ".sample(sampler(min_filter::linear, mag_filter::linear, mip_filter::nearest), ";
+                _emit_variable(tex_expr->coord());
+                _os << ", 0)";
                 break;
         }
     }

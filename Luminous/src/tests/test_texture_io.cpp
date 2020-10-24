@@ -17,6 +17,8 @@ int main(int argc, char *argv[]) {
     constexpr auto width = 1280u;
     constexpr auto height = 720u;
 
+    auto inputTex = device->load_texture("HelloWorld.png");
+
     auto hdr_texture = device->allocate_texture<float4>(width, height);
     auto ldr_texture = device->allocate_texture<uchar4>(width, height);
     auto kernel = device->compile_kernel([&] {
@@ -33,15 +35,16 @@ int main(int argc, char *argv[]) {
             };
             Var hdr_color = make_float3(xy_f / size_f, 1.0f);
             Var ldr_color = make_float4(linear_to_srgb(hdr_color), 1.0f);
-            hdr_texture.write(txy, make_float4(hdr_color, 1.0f));
-            ldr_texture.write(txy, ldr_color);
+//            hdr_texture.write(txy, make_float4(hdr_color, 1.0f));
+//            ldr_texture.write(txy, ldr_color);
+//            hdr_texture.write(txy, inputTex.sample(txy));
+            Var a = inputTex.sample(txy);
         };
     });
 
     device->launch([&](Dispatcher &dispatcher) {
         dispatcher.exec(kernel.parallelize(make_uint2(width, height)));
-        dispatcher.exec(ldr_texture.save(context.working_path("test.png")));
-        dispatcher.exec(hdr_texture.save(context.working_path("test.hdr")));
+        dispatcher.exec(hdr_texture.save(context.working_path("helloworld.exr")));
     });
     device->synchronize();
 }

@@ -79,7 +79,7 @@ namespace luminous::render {
          * @param  u 均匀二维随机变量
          * @return   三角形内部uv坐标
          */
-        inline Expr<float2> uniform_sample_triangle(const Expr<float2> u) {
+        inline Expr<float2> uniform_sample_triangle(Expr<float2> u) {
             Var<float> su0 = sqrt(u.x);
             return make_float2(1 - su0, u.x * su0);
         }
@@ -106,14 +106,14 @@ namespace luminous::render {
          * y = sinθsinφ
          * z = cosθ
          */
-        inline Expr<float2> uniform_sample_cone(const Expr<float2> &u, const Expr<float> &cos_theta_max) {
+        inline Expr<float2> uniform_sample_cone(Expr<float2> u, Expr<float> cos_theta_max) {
             Expr<float> cos_theta = (1 - u.x) + u.x * cos_theta_max;
             Expr<float> sin_theta = sqrt(1 - cos_theta * cos_theta);
             Expr<float> phi = constant::_2Pi * u.y;
             return make_float3(cos(phi) * sin_theta, sin(phi) * sin_theta, cos_theta);
         }
 
-        inline Expr<float> cosine_hemisphere_pdf(const Expr<float> &cos_theta) {
+        inline Expr<float> cosine_hemisphere_pdf(Expr<float> cos_theta) {
             return cos_theta * constant::invPi;
         }
 
