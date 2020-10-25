@@ -37,8 +37,10 @@ int main(int argc, char *argv[]) {
             Var ldr_color = make_float4(linear_to_srgb(hdr_color), 1.0f);
 //            hdr_texture.write(txy, make_float4(hdr_color, 1.0f));
 //            ldr_texture.write(txy, ldr_color);
-//            hdr_texture.write(txy, inputTex.sample(txy));
-            Var a = inputTex.sample(txy);
+//            hdr_texture.write(txy, inputTex.read(txy));
+            Var a = inputTex.sample(cast<float2>(txy) / make_float2(1280u, 720u));
+            hdr_texture.write(txy, a);
+//            Var aa = 1.0 / 1u;
         };
     });
 

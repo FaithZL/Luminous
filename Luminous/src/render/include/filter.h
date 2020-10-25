@@ -6,7 +6,6 @@
 
 #include <render/plugin.h>
 #include <compute/dsl.h>
-//#include <map>
 
 namespace luminous::render {
 
