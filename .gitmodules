@@ -4,3 +4,7 @@
 [submodule "Luminous/thirdparty/cxxopts"]
 	path = Luminous/thirdparty/cxxopts
 	url = https://github.com/jarro2783/cxxopts.git
+[submodule "Luminous/thirdparty/assimp"]
+	path = Luminous/thirdparty/assimp
+	url = https://github.com/assimp/assimp.git
+
