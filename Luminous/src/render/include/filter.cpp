@@ -3,6 +3,7 @@
 //
 
 #include "filter.h"
+#include "film.h"
 
 namespace luminous::render {
 

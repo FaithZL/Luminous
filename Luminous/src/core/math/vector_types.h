@@ -6,6 +6,7 @@
 
 #include <type_traits>
 #include "scalar_types.h"
+#include "core/header.h"
 
 namespace luminous {
 
@@ -219,6 +220,10 @@ namespace luminous {
     constexpr auto make_##type##2() noexcept { return type##2{}; }                    \
     constexpr auto make_##type##2(type s) noexcept { return type##2{s}; }             \
     constexpr auto make_##type##2(type x, type y) noexcept { return type##2{x, y}; }  \
+    template<typename T>                                                              \
+    constexpr auto make_##type##2(T v[]) noexcept {                                   \
+        return type##2{static_cast<type>(v[0]), static_cast<type>(v[1])};             \
+    }                                                                                 \
                                                                                       \
     template<typename U, uint N>                                                      \
     constexpr auto make_##type##2(Vector<U, N> v) noexcept {                          \
@@ -226,18 +231,23 @@ namespace luminous {
         return type##2{static_cast<type>(v.x), static_cast<type>(v.y)};               \
     }
 
-#define MAKE_VECTOR_MAKE_TYPE3(type)                                                              \
-    constexpr auto make_##type##3() noexcept { return type##3{}; }                                \
-    constexpr auto make_##type##3(type s) noexcept { return type##3{s}; }                         \
-    constexpr auto make_##type##3(type x, type y, type z) noexcept { return type##3 {x, y, z}; }  \
-    constexpr auto make_##type##3(type##2 v, type z) noexcept { return type##3 {v.x, v.y, z}; }   \
-    constexpr auto make_##type##3(type x, type##2 v) noexcept { return type##3 {x, v.x, v.y}; }   \
-                                                                                                  \
-    template<typename U, uint N>                                                                  \
-    constexpr auto make_##type##3(Vector<U, N> v) noexcept {                                      \
-        static_assert(N == 3 || N == 4);                                                          \
-        return type##3 {static_cast<type>(v.x), static_cast<type>(v.y), static_cast<type>(v.z)};  \
-    }                                                                                             \
+#define MAKE_VECTOR_MAKE_TYPE3(type)                                                               \
+    constexpr auto make_##type##3() noexcept { return type##3{}; }                                 \
+    constexpr auto make_##type##3(type s) noexcept { return type##3{s}; }                          \
+    constexpr auto make_##type##3(type x, type y, type z) noexcept { return type##3 {x, y, z}; }   \
+    constexpr auto make_##type##3(type##2 v, type z) noexcept { return type##3 {v.x, v.y, z}; }    \
+    constexpr auto make_##type##3(type x, type##2 v) noexcept { return type##3 {x, v.x, v.y}; }    \
+                                                                                                   \
+    template<typename U, uint N>                                                                   \
+    constexpr auto make_##type##3(Vector<U, N> v) noexcept {                                       \
+        static_assert(N == 3 || N == 4);                                                           \
+        return type##3 {static_cast<type>(v.x), static_cast<type>(v.y), static_cast<type>(v.z)};   \
+    }                                                                                              \
+                                                                                                   \
+    template<typename U>                                                                           \
+    constexpr auto make_##type##3(U v[]) noexcept {                                                \
+        return type##3{static_cast<type>(v[0]), static_cast<type>(v[1]), static_cast<type>(v[2])}; \
+    }                                                                                              \
 
 #define MAKE_VECTOR_MAKE_TYPE4(type)                                                                         \
     constexpr auto make_##type##4() noexcept { return type##4 {}; }                                          \
@@ -256,7 +266,17 @@ namespace luminous {
             static_cast<type>(v.y),                                                                          \
             static_cast<type>(v.z),                                                                          \
             static_cast<type>(v.w)};                                                                         \
+    }                                                                                                        \
+                                                                                                             \
+    template<typename U>                                                                                     \
+    constexpr auto make_##type##4(U v[]) noexcept {                                                          \
+        return type##4 {                                                                                     \
+            static_cast<type>(v[0]),                                                                         \
+            static_cast<type>(v[1]),                                                                         \
+            static_cast<type>(v[2]),                                                                         \
+            static_cast<type>(v[3])};                                                                        \
     }
+
 
 #define MAKE_VECTOR_TYPE(type)        \
     using type##2 = Vector<type, 2>;  \

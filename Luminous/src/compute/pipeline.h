@@ -35,7 +35,9 @@ namespace luminous::compute {
                 std::enable_if_t<std::is_invocable_v<Func>, int> = 0>
         Pipeline &operator<<(Func &&func) {
             _stages.emplace([f = std::forward<Func>(func)](Dispatcher &) { f(); });
-            if (_stages.size() >= max_stages_in_queue) { run(); }
+            if (_stages.size() >= max_stages_in_queue) {
+                run();
+            }
             return *this;
         }
 
@@ -53,6 +55,11 @@ namespace luminous::compute {
                     _stages.pop();
                 }
             });
+        }
+
+        void synchronize() noexcept {
+            run();
+            _device->synchronize();
         }
     };
 
