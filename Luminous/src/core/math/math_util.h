@@ -501,10 +501,10 @@ constexpr float4x4 translation(const float3 v) noexcept {
             v.x, v.y, v.z, 1.0f);
 }
 
-inline float4x4 rotation(const float3 axis, float angle) noexcept {
-
-    auto c = cos(angle);
-    auto s = sin(angle);
+inline float4x4 rotation(const float3 axis, float theta, bool radian = false) noexcept {
+    theta = radian ? theta : radians(theta);
+    auto c = cos(theta);
+    auto s = sin(theta);
     auto a = normalize(axis);
     auto t = (1.0f - c) * a;
 
@@ -513,6 +513,18 @@ inline float4x4 rotation(const float3 axis, float angle) noexcept {
             t.y * a.x - s * a.z, c + t.y * a.y, t.y * a.z + s * a.x, 0.0f,
             t.z * a.x + s * a.y, t.z * a.y - s * a.x, c + t.z * a.z, 0.0f,
             0.0f, 0.0f, 0.0f, 1.0f);
+}
+
+inline float4x4 rotation_x(float theta, bool radian = false) noexcept {
+    return rotation(make_float3(1, 0, 0), theta, radian);
+}
+
+inline float4x4 rotation_y(float theta, bool radian = false) noexcept {
+    return rotation(make_float3(0, 1, 0), theta, radian);
+}
+
+inline float4x4 rotation_z(float theta, bool radian = false) noexcept {
+    return rotation(make_float3(0, 0, 1), theta, radian);
 }
 
 constexpr float4x4 scaling(const float3 s) noexcept {

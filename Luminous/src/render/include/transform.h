@@ -13,4 +13,15 @@
 
 namespace luminous::render {
     
+    class Transform : public Plugin {
+    public:
+        Transform(Device *device, const nloJson &params) noexcept : 
+        Plugin(device, params) {
+
+        }
+
+        [[nodiscard]] virtual bool is_static() const noexcept = 0;
+        [[nodiscard]] virtual float4x4 matrix(float time) const noexcept = 0;
+    };
+
 }
