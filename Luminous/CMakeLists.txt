@@ -47,6 +47,10 @@ set_target_properties(mimalloc PROPERTIES
 add_library(mimalloc_config INTERFACE)
 target_link_libraries(mimalloc_config INTERFACE mimalloc)
 
+add_subdirectory(thirdparty/assimp)
+add_library(assimp_config INTERFACE)
+target_link_libraries(assimp_config INTERFACE assimp::assimp mimalloc_config)
+
 add_subdirectory(src)
 
 
