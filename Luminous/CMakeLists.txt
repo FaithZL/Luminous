@@ -51,6 +51,8 @@ add_subdirectory(thirdparty/assimp)
 add_library(assimp_config INTERFACE)
 target_link_libraries(assimp_config INTERFACE assimp::assimp mimalloc_config)
 
+set(CMAKE_DEBUG_POSTFIX "")
+
 add_subdirectory(src)
 
 
