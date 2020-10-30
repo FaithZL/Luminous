@@ -12,3 +12,4 @@ endfunction()
 
 add_subdirectory(include)
 add_subdirectory(samplers)
+add_subdirectory(transforms)
