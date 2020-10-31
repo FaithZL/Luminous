@@ -44,6 +44,13 @@ namespace luminous {
             [[nodiscard]] constexpr float3 operator[](Index i) const noexcept {
                 return cols[i];
             }
+
+
+            [[nodiscard]] std::string to_string() const {
+                return serialize(serialize(cols[0].to_string()),
+                                 serialize(cols[1].to_string()),
+                                 serialize(cols[2].to_string()));
+            }
         };
 
         struct float4x4 {
@@ -76,6 +83,13 @@ namespace luminous {
             template<typename Index>
             [[nodiscard]] constexpr float4 operator[](Index i) const noexcept {
                 return cols[i];
+            }
+
+            [[nodiscard]] std::string to_string() const {
+                return serialize("[", serialize(cols[0].to_string()), "\n",
+                                 serialize(cols[1].to_string()), "\n",
+                                 serialize(cols[2].to_string()), "\n",
+                                 serialize(cols[3].to_string()), "]");
             }
         };
 
@@ -141,6 +155,7 @@ namespace luminous {
         [[nodiscard]] constexpr float4x4 operator*(const float4x4 lhs, const float4x4 rhs) noexcept {
             return make_float4x4(lhs * rhs[0], lhs * rhs[1], lhs * rhs[2], lhs * rhs[3]);
         }
+
 
     }
 }

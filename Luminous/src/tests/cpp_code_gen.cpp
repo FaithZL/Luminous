@@ -124,10 +124,10 @@ int main() {
 
     });
 
-
+    auto a = luminous::make_float4x4();
 
     float v2{0x1.99999ap-4f};
-    cout << v2;
+    cout << a.to_string();
 
     return 0;
 }

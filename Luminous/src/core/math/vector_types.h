@@ -64,6 +64,16 @@ namespace luminous {
             template<typename Index>
             [[nodiscard]] T operator[](Index i) const noexcept { return reinterpret_cast<const T(&)[N]>(*this)[i]; }
 
+            [[nodiscard]] std::string to_string() const {
+                static_assert(N == 2 || N == 3 || N == 4);
+                if constexpr (N == 2) {
+                    return serialize("[", Storage::x, ",", Storage::y, "]");
+                } else if constexpr (N == 3) {
+                    return serialize("[", Storage::x, ",", Storage::y, ",",Storage::z, "]");
+                } else {
+                    return serialize("[", Storage::x, ",", Storage::y, ",",Storage::z,",", Storage::w, "]");
+                }
+            }
 #define MAKE_ASSIGN_OP(op)                           \
     Vector &operator op(Vector<T, N> rhs) noexcept { \
         static_assert(N == 2 || N == 3 || N == 4);   \
