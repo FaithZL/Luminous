@@ -17,6 +17,7 @@
 #include <core/logging.h>
 #include <core/math/data_types.h>
 #include <compute/device.h>
+#include "param_set.h"
 
 namespace luminous::render {
 
@@ -53,7 +54,7 @@ LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME(Light)
         Device *_device{nullptr};
 
     public:
-        Plugin(Device *device, const nloJson &) noexcept
+        Plugin(Device *device, const ParamSet &) noexcept
         : _device{device} {
 
         }
@@ -76,12 +77,12 @@ LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME(Light)
         [[nodiscard]] static std::unique_ptr<T> create(
                 Device *device,
                 std::string_view derived_name_pascal_case,
-                const nloJson &params) {
+                const ParamSet &params) {
 
             auto base_name = pascal_to_snake_case(plugin_base_class_name<T>());
             auto derived_name = pascal_to_snake_case(derived_name_pascal_case);
             auto plugin_dir = device->context().runtime_path("bin") / "plugins";
-            using PluginCreator = T *(Device *, const nloJson &);
+            using PluginCreator = T *(Device *, const ParamSet &);
             auto moduleName = serialize("luminous-", base_name, "-", derived_name);
             auto creator = device->context().load_dynamic_function<PluginCreator>(plugin_dir,
                                                                                   moduleName,
@@ -92,9 +93,9 @@ LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME(Light)
 
 }
 
-#define LUMINOUS_EXPORT_PLUGIN_CREATOR(PluginClass)                                                                                            \
-    extern "C" LUMINOUS_EXPORT ::luminous::render::Plugin *create(::luminous::compute::Device *device,                                         \
-                                                            const nloJson &params) {                                                           \
+#define LUMINOUS_EXPORT_PLUGIN_CREATOR(PluginClass)                                                                                                    \
+    extern "C" LUMINOUS_EXPORT ::luminous::render::Plugin *create(::luminous::compute::Device *device,                                                 \
+                                                            const luminous::render::ParamSet &params) {                                                \
         LUMINOUS_INFO("Creating instance of class ", #PluginClass, ", category: ", ::luminous::render::Plugin::plugin_base_class_name<PluginClass>()); \
-        return new PluginClass{device, params};                                                                                                \
+        return new PluginClass{device, params};                                                                                                        \
     }

@@ -501,6 +501,14 @@ constexpr float4x4 translation(const float3 v) noexcept {
             v.x, v.y, v.z, 1.0f);
 }
 
+constexpr float4x4 identity() noexcept {
+    return make_float4x4(
+            1.0f, 0.0f, 0.0f, 0.0f,
+            0.0f, 1.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 1.0f, 0.0f,
+            0.0f, 0.0f, 0.0f, 1.0f);
+}
+
 inline float4x4 rotation(const float3 axis, float theta, bool radian = false) noexcept {
     theta = radian ? theta : radians(theta);
     auto c = cos(theta);

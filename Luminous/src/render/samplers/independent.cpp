@@ -59,7 +59,7 @@ namespace luminous::render::sampler {
             }).parallelize(resolution, threadgroup_size);
         }
     public:
-        IndependentSampler(Device *d, const nloJson &params)
+        IndependentSampler(Device *d, const ParamSet &params)
                 : Sampler{d, params} {}
 
         Expr<float> generate_1d_sample(Expr<uint> pixel_index) override {

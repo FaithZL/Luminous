@@ -23,7 +23,7 @@ namespace luminous::render {
         virtual void _prepare_for_next_frame(Pipeline &pipeline) = 0;
         virtual void _reset(Pipeline &pipeline, uint2 resolution) = 0;
     public:
-        Sampler(Device * device, const nloJson &param)
+        Sampler(Device * device, const ParamSet &param)
         : Plugin(device, param),
         _spp(param.value("spp", 128)) {
 

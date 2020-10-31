@@ -15,7 +15,7 @@ namespace luminous::render {
     
     class Transform : public Plugin {
     public:
-        Transform(Device *device, const nloJson &params) noexcept : 
+        Transform(Device *device, const ParamSet &params) noexcept :
         Plugin(device, params) {
 
         }

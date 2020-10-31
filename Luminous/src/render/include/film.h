@@ -28,10 +28,10 @@ namespace luminous::render {
         virtual void _save(Pipeline &pipeline, const std::filesystem::path &path) = 0;
 
     public:
-        Film(Device *device, const nloJson &params)
+        Film(Device *device, const ParamSet &params)
         :Plugin(device, params),
         _resolution(params.value("resolution",
-                                 nloJson::array({500, 500}))) {
+                                 ParamSet::array({500, 500}))) {
 
         }
     };
