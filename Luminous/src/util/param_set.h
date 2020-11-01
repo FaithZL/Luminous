@@ -11,13 +11,6 @@ namespace luminous::render {
     using namespace std;
     class ParamSet: public nloJson {
     private:
-        [[nodiscard]] ParamSet _child(const std::string &key) const {
-            return (*this)[key];
-        }
-
-        [[nodiscard]] ParamSet at(uint idx) const {
-            return nloJson::at(idx);
-        }
 
 #define LUMINOUS_MAKE_AS_TYPE_FUNC(type) [[nodiscard]] type _as_##type() const noexcept {   \
             return static_cast<type>(*this);                                                \
@@ -60,6 +53,7 @@ namespace luminous::render {
         LUMINOUS_MAKE_AS_TYPE_FUNC(int)
         LUMINOUS_MAKE_AS_TYPE_FUNC(uint)
         LUMINOUS_MAKE_AS_TYPE_FUNC(float)
+        LUMINOUS_MAKE_AS_TYPE_FUNC(string)
 
         LUMINOUS_MAKE_AS_TYPE_VEC(uint)
         LUMINOUS_MAKE_AS_TYPE_VEC(int)
@@ -81,8 +75,12 @@ namespace luminous::render {
 
     public:
 
-        [[nodiscard]] ParamSet operator[](const std::string &key) const {
-            return _child(key);
+        [[nodiscard]] ParamSet get(const std::string &key) const {
+            return ParamSet((*this)[key]);
+        }
+
+        [[nodiscard]] ParamSet at(uint idx) const {
+            return nloJson::at(idx);
         }
 
 #define LUMINOUS_MAKE_AS_TYPE_SCALAR(type) [[nodiscard]] type as_##type(type val = 0) const {                   \

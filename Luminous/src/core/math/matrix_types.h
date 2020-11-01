@@ -91,6 +91,7 @@ namespace luminous {
                                  serialize(cols[2].to_string()), "\n",
                                  serialize(cols[3].to_string()), "]");
             }
+
         };
 
         [[nodiscard]] constexpr auto make_float3x3(float val = 1.0f) noexcept {
@@ -144,6 +145,22 @@ namespace luminous {
             return v.x * m[0] + v.y * m[1] + v.z * m[2];
         }
 
+        [[nodiscard]] constexpr float4x4 operator*(const float4x4 lhs, float v) noexcept {
+            return make_float4x4(v * lhs[0], v * lhs[1], v * lhs[2], v * lhs[3]);
+        }
+
+        [[nodiscard]] constexpr float4x4 operator*(float v, const float4x4 rhs) noexcept {
+            return make_float4x4(v * rhs[0], v * rhs[1], v * rhs[2], v * rhs[3]);
+        }
+
+        [[nodiscard]] constexpr float3x3 operator*(const float3x3 lhs, float v) noexcept {
+            return make_float3x3(v * lhs[0], v * lhs[1], v * lhs[2]);
+        }
+
+        [[nodiscard]] constexpr float3x3 operator*(float v, const float3x3 rhs) noexcept {
+            return make_float3x3(v * rhs[0], v * rhs[1], v * rhs[2]);
+        }
+
         [[nodiscard]] constexpr float3x3 operator*(const float3x3 lhs, const float3x3 rhs) noexcept {
             return make_float3x3(lhs * rhs[0], lhs * rhs[1], lhs * rhs[2]);
         }
@@ -156,6 +173,8 @@ namespace luminous {
             return make_float4x4(lhs * rhs[0], lhs * rhs[1], lhs * rhs[2], lhs * rhs[3]);
         }
 
-
+        [[nodiscard]] constexpr float4x4 operator+(const float4x4 lhs, const float4x4 rhs) noexcept {
+            return make_float4x4(lhs[0] + rhs[0], lhs[1] + rhs[1], lhs[2] + rhs[2], lhs[3] + rhs[3]);
+        }
     }
 }

@@ -370,15 +370,20 @@ template<typename T, uint N, std::enable_if_t<scalar::is_scalar<T>, int> = 0>
     }
 }
 
-template<typename A, typename B>
-[[nodiscard]] constexpr auto lerp(A a, B b, float t) noexcept {
-    return a + t * (b - a);
-}
+        template<typename A, typename B>
+        [[nodiscard]] constexpr auto lerp(A a, B b, float t) noexcept {
+            return a + t * (b - a);
+        }
 
-template<typename X, typename A, typename B>
-[[nodiscard]] constexpr auto clamp(X x, A a, B b) noexcept {
-    return min(max(x, a), b);
-}
+        template <typename T, typename U, typename V>
+        inline T clamp(T val, U low, V high) {
+            if (val < low)
+                return low;
+            else if (val > high)
+                return high;
+            else
+                return val;
+        }
 
 // Vector Functions
 template<uint N>
@@ -542,6 +547,71 @@ constexpr float4x4 scaling(const float3 s) noexcept {
             0.0f, 0.0f, s.z, 0.0f,
             0.0f, 0.0f, 0.0f, 1.0f);
 }
+
+        [[nodiscard]] static float4 matrix_to_quaternion(const float4x4 &m) {
+            float x, y, z, w;
+            float trace = m[0][0] + m[1][1] + m[2][2];
+            if (trace > 0.f) {
+                // Compute w from matrix trace, then xyz
+                // 4w^2 = m[0][0] + m[1][1] + m[2][2] + m[3][3] (but m[3][3] == 1)
+                float s = std::sqrt(trace + 1.0f);
+                w = s / 2.0f;
+                s = 0.5f / s;
+                x = (m[2][1] - m[1][2]) * s;
+                y = (m[0][2] - m[2][0]) * s;
+                z = (m[1][0] - m[0][1]) * s;
+            } else {
+                // Compute largest of $x$, $y$, or $z$, then remaining components
+                const int nxt[3] = {1, 2, 0};
+                float q[3];
+                int i = 0;
+                if (m[1][1] > m[0][0]) i = 1;
+                if (m[2][2] > m[i][i]) i = 2;
+                int j = nxt[i];
+                int k = nxt[j];
+                float s = std::sqrt((m[i][i] - (m[j][j] + m[k][k])) + 1.0f);
+                q[i] = s * 0.5f;
+                if (s != 0.f) s = 0.5f / s;
+                w = (m[k][j] - m[j][k]) * s;
+                q[j] = (m[j][i] + m[i][j]) * s;
+                q[k] = (m[k][i] + m[i][k]) * s;
+                x = q[0];
+                y = q[1];
+                z = q[2];
+            }
+            return make_float4(x, y, z, w);
+        }
+
+        [[nodiscard]] static float4x4 quaternion_to_matrix(const float4 &q) noexcept {
+            float x = q.x;
+            float y = q.y;
+            float z = q.z;
+            float w = q.w;
+            float xx = x * x, yy = y * y, zz = z * z;
+            float xy = x * y, xz = x * z, yz = y * z;
+            float wx = x * w, wy = y * w, wz = z * w;
+            auto ret = make_float4x4(1 - 2 * (yy + zz), 2 * (xy + wz),     2 * (xz - wy),     0,
+                                     2 * (xy - wz),     1 - 2 * (xx + zz), 2 * (yz + wx),     0,
+                                     2 * (xz + wy),     2 * (yz - wx),     1 - 2 * (xx + yy), 0,
+                                     0,                 0,                 0,                 0);
+            return ret;
+        }
+
+        [[nodiscard]] static float4 quaternion_slerp(const float4 &q1, const float4 &q2, float t) {
+            float cosTheta = dot(q1, q2);
+            if (cosTheta > 0.9995f) {
+                // 如果旋转角度特别小，当做直线处理
+                return normalize((1 - t) * q1 + t * q2);
+            } else {
+                // 原始公式 result = (q1sin((1-t)θ) + q2sin(tθ)) / (sinθ)
+                // 比较直观的理解qperp = q2 - cosθ * q1 = q2 - dot(q1, q2) * q1
+                // q' = q1 * cos(θt) + qperp * sin(θt)
+                float theta = std::acos(clamp(cosTheta, -1, 1));
+                float thetap = theta * t;
+                auto qperp = normalize(q2 - q1 * cosTheta);
+                return q1 * std::cos(thetap) + qperp * std::sin(thetap);
+            }
+        }
 
 } // math
 

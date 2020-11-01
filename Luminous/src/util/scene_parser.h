@@ -5,7 +5,7 @@
 #pragma once
 
 #include <fstream>
-#include "render/param_set.h"
+#include "param_set.h"
 #include <core/string_util.h>
 
 namespace luminous {
