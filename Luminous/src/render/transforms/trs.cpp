@@ -6,12 +6,13 @@
 
 namespace luminous::render::transform {
 
-    TRSTransform::TRSTransform(Device * device, const ParamSet &params)
-    : Transform(device, params),
+    TRSTransform::TRSTransform(Device * device, const ParamSet &data)
+    : Transform(device, data),
     _t(make_float3(0.0f)),
     _r(make_float4(0.0f)),
     _s(make_float3(1.0f)) {
-        parse(params);
+        _matrix = parse(data);
+        decompose(_matrix);
     }
 
 }

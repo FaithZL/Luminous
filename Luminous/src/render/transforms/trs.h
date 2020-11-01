@@ -21,49 +21,58 @@ namespace luminous::render::transform {
          *      "param" : [1,0,1]
          * }
          */
-        void parse(const ParamSet &data) noexcept {
-            if (data.get("type") == "translation") {
-                parse_translation(data.get("param"));
-            } else if (data.get("type") == "rotate") {
-                parse_rotate(data.get("param"));
-            } else if (data.get("type") == "scale") {
-                parse_scaling(data.get("param"));
-            } else if (data.get("type") == "matrix") {
-                parse_matrix(data.get("param"));
-            } else {
-                parse_default();
+        float4x4 parse(const ParamSet &data) noexcept {
+            if (data.is_array()) {
+                float4x4 ret = make_float4x4(1.0f);
+                for (int i = 0; i < data.size(); ++i) {
+                    ret = ret * parse(data[i]);
+                }
+                return ret;
             }
-            decompose(_matrix);
+            if (data.get("type") == "translation") {
+                return parse_translation(data.get("param"));
+            } else if (data.get("type") == "rotate") {
+                return parse_rotate(data.get("param"));
+            } else if (data.get("type") == "scale") {
+                return parse_scaling(data.get("param"));
+            } else if (data.get("type") == "matrix") {
+                return parse_matrix(data.get("param"));
+            } else {
+                return parse_default();
+            }
         }
 
-        void parse_translation(const ParamSet &data) noexcept {
+        float4x4 parse_translation(const ParamSet &data) noexcept {
             auto t = data.as_float3();
-            _matrix = luminous::math::translation(t);
+            return luminous::math::translation(t);
         }
 
-        void parse_rotate(const ParamSet &data) noexcept {
+        float4x4 parse_rotate(const ParamSet &data) noexcept {
             auto r = data.as_float4();
-            _matrix = luminous::math::rotation(make_float3(r), r.w);
+            return luminous::math::rotation(make_float3(r), r.w);
         }
 
-        void parse_scaling(const ParamSet &data) noexcept {
+        float4x4 parse_scaling(const ParamSet &data) noexcept {
             auto s = data.as_float3(make_float3(1));
-            _matrix = luminous::math::scaling(s);
+            return luminous::math::scaling(s);
         }
 
-        void parse_default() noexcept {
-            _matrix = make_float4x4(1.0f);
+        float4x4 parse_default() noexcept {
+            return make_float4x4(1.0f);
         }
 
-        void parse_matrix(const ParamSet &data) noexcept {
-            _matrix = data.as_float4x4();
+        float4x4 parse_matrix(const ParamSet &data) noexcept {
+            return data.as_float4x4();
         }
 
         void decompose(const float4x4 &matrix) noexcept {
-            // extract translation component
-            _t = make_float3(matrix[3]);
 
-            auto M = make_float4x4();
+            auto M = matrix;
+            for (int i = 0; i < 3; ++i) {
+                M[i][3] = M[3][i] = 0.0f;
+            }
+            M[3][3] = 1.f;
+
             float norm = 0;
             int count = 0;
             auto R = M;
@@ -84,7 +93,12 @@ namespace luminous::render::transform {
                 R = R_next;
             } while (++count < 100 && norm > .0001);
 
+            float4x4 S = M * inverse(R);
 
+            // extract translation component
+            _t = make_float3(matrix[3]);
+            _r = matrix_to_quaternion(R);
+            _s = make_float3(S[0][0], S[1][1], S[2][2]);
         }
 
     public:
