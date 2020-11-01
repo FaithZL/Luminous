@@ -21,7 +21,7 @@ namespace luminous::render::transform {
          *      "param" : [1,0,1]
          * }
          */
-        float4x4 parse(const ParamSet &data) noexcept {
+        [[nodiscard]] float4x4 parse(const ParamSet &data) noexcept {
             if (data.is_array()) {
                 float4x4 ret = make_float4x4(1.0f);
                 for (int i = 0; i < data.size(); ++i) {
@@ -42,26 +42,26 @@ namespace luminous::render::transform {
             }
         }
 
-        float4x4 parse_translation(const ParamSet &data) noexcept {
+        [[nodiscard]] float4x4 parse_translation(const ParamSet &data) noexcept {
             auto t = data.as_float3();
             return luminous::math::translation(t);
         }
 
-        float4x4 parse_rotate(const ParamSet &data) noexcept {
+        [[nodiscard]] float4x4 parse_rotate(const ParamSet &data) noexcept {
             auto r = data.as_float4();
             return luminous::math::rotation(make_float3(r), r.w);
         }
 
-        float4x4 parse_scaling(const ParamSet &data) noexcept {
+        [[nodiscard]] float4x4 parse_scaling(const ParamSet &data) noexcept {
             auto s = data.as_float3(make_float3(1));
             return luminous::math::scaling(s);
         }
 
-        float4x4 parse_default() noexcept {
+        [[nodiscard]] float4x4 parse_default() noexcept {
             return make_float4x4(1.0f);
         }
 
-        float4x4 parse_matrix(const ParamSet &data) noexcept {
+        [[nodiscard]] float4x4 parse_matrix(const ParamSet &data) noexcept {
             return data.as_float4x4();
         }
 
