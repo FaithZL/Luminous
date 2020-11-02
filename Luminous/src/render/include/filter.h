@@ -18,7 +18,7 @@ namespace luminous::render {
     public:
         Filter(Device *device, const ParamSet &params)
         : Plugin(device, params),
-        _radius(params.value("radius", 1)) {
+        _radius(params.get("radius").as_float(2)) {
 
         }
 

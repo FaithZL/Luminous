@@ -9,21 +9,23 @@
 
 namespace luminous::render {
     using namespace std;
-    class ParamSet: public nloJson {
+    class ParamSet {
+    private:
+        nloJson _json;
     private:
 
 #define LUMINOUS_MAKE_AS_TYPE_FUNC(type) [[nodiscard]] type _as_##type() const noexcept {   \
-            return static_cast<type>(*this);                                                \
+            return static_cast<type>(_json);                                                \
         }
 
 #define LUMINOUS_MAKE_AS_TYPE_VEC2(type) [[nodiscard]] type##2 _as_##type##2() const noexcept { \
-            return make_##type##2(this->at(0), this->at(1));                                    \
+            return make_##type##2(this->at(0).as_##type(), this->at(1).as_##type());                                    \
         }
 #define LUMINOUS_MAKE_AS_TYPE_VEC3(type) [[nodiscard]] type##3 _as_##type##3() const noexcept { \
-            return make_##type##3(this->at(0), this->at(1), this->at(2));                       \
+            return make_##type##3(this->at(0).as_##type(), this->at(1).as_##type(), this->at(2).as_##type());                       \
         }
 #define LUMINOUS_MAKE_AS_TYPE_VEC4(type) [[nodiscard]] type##4 _as_##type##4() const noexcept { \
-            return make_##type##4(this->at(0), this->at(1), this->at(2), this->at(3));          \
+            return make_##type##4(this->at(0).as_##type(), this->at(1).as_##type(), this->at(2).as_##type(), this->at(3).as_##type());          \
         }
 #define LUMINOUS_MAKE_AS_TYPE_VEC(type)   \
         LUMINOUS_MAKE_AS_TYPE_VEC2(type)  \
@@ -74,13 +76,21 @@ namespace luminous::render {
 
 
     public:
+        ParamSet() {}
+        ParamSet(const nloJson &json):
+        _json(json) {
+
+        }
+
+        void setJson(const nloJson &json) { _json = json; }
+        nloJson json() const { return _json; }
 
         [[nodiscard]] ParamSet get(const std::string &key) const {
-            return ParamSet((*this)[key]);
+            return ParamSet(_json[key]);
         }
 
         [[nodiscard]] ParamSet at(uint idx) const {
-            return nloJson::at(idx);
+            return ParamSet(_json.at(idx));
         }
 
 #define LUMINOUS_MAKE_AS_TYPE_SCALAR(type) [[nodiscard]] type as_##type(type val = 0) const {                   \

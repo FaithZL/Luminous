@@ -22,20 +22,20 @@ namespace luminous::render::transform {
          * }
          */
         [[nodiscard]] float4x4 parse(const ParamSet &data) noexcept {
-            if (data.is_array()) {
+            if (data.json().is_array()) {
                 float4x4 ret = make_float4x4(1.0f);
-                for (int i = 0; i < data.size(); ++i) {
-                    ret = ret * parse(data[i]);
+                for (int i = 0; i < data.json().size(); ++i) {
+                    ret = ret * parse(data.json()[i]);
                 }
                 return ret;
             }
-            if (data.get("type") == "translation") {
+            if (data.get("type").json() == "translation") {
                 return parse_translation(data.get("param"));
-            } else if (data.get("type") == "rotate") {
+            } else if (data.get("type").json() == "rotate") {
                 return parse_rotate(data.get("param"));
-            } else if (data.get("type") == "scale") {
+            } else if (data.get("type").json() == "scale") {
                 return parse_scaling(data.get("param"));
-            } else if (data.get("type") == "matrix") {
+            } else if (data.get("type").json() == "matrix") {
                 return parse_matrix(data.get("param"));
             } else {
                 return parse_default();

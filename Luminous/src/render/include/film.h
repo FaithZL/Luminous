@@ -30,8 +30,7 @@ namespace luminous::render {
     public:
         Film(Device *device, const ParamSet &params)
         :Plugin(device, params),
-        _resolution(params.value("resolution",
-                                 ParamSet::array({500, 500}))) {
+        _resolution(params.get("resolution").as_uint2(make_uint2(500, 500))) {
 
         }
     };

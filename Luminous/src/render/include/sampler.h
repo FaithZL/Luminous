@@ -25,7 +25,7 @@ namespace luminous::render {
     public:
         Sampler(Device * device, const ParamSet &param)
         : Plugin(device, param),
-        _spp(param.value("spp", 128)) {
+        _spp(param.get("spp").as_uint(128)) {
 
         }
 
