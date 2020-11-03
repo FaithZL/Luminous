@@ -548,7 +548,25 @@ MAKE_VECTOR_BINARY_FUNC(max)
                     0.0f, 0.0f, 0.0f, 1.0f);
         }
 
-        [[nodiscard]] static float4 matrix_to_quaternion(const float4x4 &m) {
+        /**
+         * 跟复数一样，四元数用来表示旋转
+         * q = w + xi + yj + zk
+         * 其中 i^2 = j^2 = k^2 = ijk = -1
+         * 实部为w，虚部为x,y,z
+         * 单位四元数为 x^2 + y^2 + z^2 + w^2 = 1
+
+         * 四元数的乘法法则与复数相似
+         * qq' = (qw + qxi + qyj + qxk) * (q'w + q'xi + q'yj + q'xk)
+         * 展开整理之后
+         * (qq')xyz = cross(qxyz, q'xyz) + qw * q'xyz + q'w * qxyz
+         * (qq')w = qw * q'w - dot(qxyz, q'xyz)
+
+         * 四元数用法
+         * 一个点p在绕某个向量单位v旋转2θ之后p',其中旋转四元数为q = (cosθ, v * sinθ)，q为单位四元数
+         * 则满足p' = q * p * p^-1
+         */
+        [[nodiscard]] static float4 matrix_to_quaternion(const float4x4 &mat) {
+            auto m = transpose(mat);
             float x, y, z, w;
             float trace = m[0][0] + m[1][1] + m[2][2];
             if (trace > 0.f) {
