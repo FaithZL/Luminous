@@ -514,7 +514,7 @@ MAKE_VECTOR_BINARY_FUNC(max)
                     0.0f, 0.0f, 0.0f, 1.0f);
         }
 
-        inline float4x4 rotation(const float3 axis, float theta, bool radian = false) noexcept {
+        inline float4x4 rotation(const float3 &axis, float theta, bool radian = false) noexcept {
             theta = radian ? theta : radians(theta);
             auto c = cos(theta);
             auto s = sin(theta);
@@ -565,8 +565,7 @@ MAKE_VECTOR_BINARY_FUNC(max)
          * 一个点p在绕某个向量单位v旋转2θ之后p',其中旋转四元数为q = (cosθ, v * sinθ)，q为单位四元数
          * 则满足p' = q * p * p^-1
          */
-        [[nodiscard]] static float4 matrix_to_quaternion(const float4x4 &mat) {
-            auto m = transpose(mat);
+        [[nodiscard]] static float4 matrix_to_quaternion(const float4x4 &m) {
             float x, y, z, w;
             float trace = m[0][0] + m[1][1] + m[2][2];
             if (trace > 0.f) {
@@ -612,7 +611,8 @@ MAKE_VECTOR_BINARY_FUNC(max)
                                      2 * (xy - wz),     1 - 2 * (xx + zz), 2 * (yz + wx),     0,
                                      2 * (xz + wy),     2 * (yz - wx),     1 - 2 * (xx + yy), 0,
                                      0,                 0,                 0,                 0);
-            return ret;
+
+            return transpose(ret);
         }
 
         [[nodiscard]] static float4 quaternion_slerp(const float4 &q1, const float4 &q2, float t) {

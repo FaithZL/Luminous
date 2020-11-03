@@ -11,6 +11,7 @@ namespace luminous::render::transform {
     class TRSTransform : public Transform {
     protected:
         float3 _t;
+        // quaternion
         float4 _r;
         float3 _s;
         float4x4 _matrix{};
@@ -93,20 +94,21 @@ namespace luminous::render::transform {
                 R = R_next;
             } while (++count < 100 && norm > .0001);
 
-            float4x4 S = M * inverse(R);
+            float4x4 S = inverse(R) * M;
 
             // extract translation component
             _t = make_float3(matrix[3]);
             _r = matrix_to_quaternion(R);
             _s = make_float3(S[0][0], S[1][1], S[2][2]);
+
         }
 
     public:
         TRSTransform(Device * device, const ParamSet &params);
         [[nodiscard]] float4x4 matrix(float time) const noexcept override { return _matrix; }
-        [[nodiscard]] auto translation() const noexcept { return _t; }
-        [[nodiscard]] auto rotation() const noexcept { return _r; }
-        [[nodiscard]] auto scaling() const noexcept { return _s; }
+        [[nodiscard]] float3 translation() const noexcept override { return _t; }
+        [[nodiscard]] float4 rotation() const noexcept override { return _r; }
+        [[nodiscard]] float3 scaling() const noexcept override { return _s; }
         [[nodiscard]] bool is_static() const noexcept override { return true; }
     };
 }

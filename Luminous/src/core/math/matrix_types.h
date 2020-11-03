@@ -89,7 +89,7 @@ namespace luminous {
                 return serialize("[", serialize(cols[0].to_string()), "\n",
                                  serialize(cols[1].to_string()), "\n",
                                  serialize(cols[2].to_string()), "\n",
-                                 serialize(cols[3].to_string()), "]");
+                                 serialize(cols[3].to_string()), "]\n");
             }
 
         };

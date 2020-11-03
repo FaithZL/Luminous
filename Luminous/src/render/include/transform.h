@@ -22,6 +22,16 @@ namespace luminous::render {
 
         [[nodiscard]] virtual bool is_static() const noexcept = 0;
         [[nodiscard]] virtual float4x4 matrix(float time) const noexcept = 0;
+
+        virtual float3 translation() const noexcept {
+            LUMINOUS_EXCEPTION("translation is not implemented !")
+        }
+        virtual float4 rotation() const noexcept {
+            LUMINOUS_EXCEPTION("rotation is not implemented !");
+        }
+        virtual float3 scaling() const noexcept {
+            LUMINOUS_EXCEPTION("scaling is not implemented !")
+        }
     };
 
 }
