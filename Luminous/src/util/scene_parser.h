@@ -10,7 +10,7 @@
 
 namespace luminous {
     inline namespace utility {
-        using luminous::render::ParamSet;
+        using luminous::utility::ParamSet;
         inline ParamSet create_json_from_file(const std::string &fn) {
             std::ifstream fst;
             fst.open(fn.c_str());

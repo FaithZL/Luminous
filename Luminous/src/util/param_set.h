@@ -7,12 +7,13 @@
 #include <compute/dsl_syntax.h>
 #include "core/header.h"
 
-namespace luminous::render {
-    using namespace std;
-    class ParamSet {
-    private:
-        nloJson _json;
-    private:
+namespace luminous {
+    inline namespace utility {
+        using namespace std;
+        class ParamSet {
+        private:
+            nloJson _json;
+        private:
 
 #define LUMINOUS_MAKE_AS_TYPE_FUNC(type) [[nodiscard]] type _as_##type() const noexcept {   \
             return static_cast<type>(_json);                                                \
@@ -52,16 +53,16 @@ namespace luminous::render {
                     this->at(3)._as_##type##4());                                                    \
         }
 
-        LUMINOUS_MAKE_AS_TYPE_FUNC(int)
-        LUMINOUS_MAKE_AS_TYPE_FUNC(uint)
-        LUMINOUS_MAKE_AS_TYPE_FUNC(float)
-        LUMINOUS_MAKE_AS_TYPE_FUNC(string)
+            LUMINOUS_MAKE_AS_TYPE_FUNC(int)
+            LUMINOUS_MAKE_AS_TYPE_FUNC(uint)
+            LUMINOUS_MAKE_AS_TYPE_FUNC(float)
+            LUMINOUS_MAKE_AS_TYPE_FUNC(string)
 
-        LUMINOUS_MAKE_AS_TYPE_VEC(uint)
-        LUMINOUS_MAKE_AS_TYPE_VEC(int)
-        LUMINOUS_MAKE_AS_TYPE_VEC(float)
+            LUMINOUS_MAKE_AS_TYPE_VEC(uint)
+            LUMINOUS_MAKE_AS_TYPE_VEC(int)
+            LUMINOUS_MAKE_AS_TYPE_VEC(float)
 
-        LUMINOUS_MAKE_AS_TYPE_MAT(float)
+            LUMINOUS_MAKE_AS_TYPE_MAT(float)
 
 #undef LUMINOUS_MAKE_AS_TYPE_FUNC
 
@@ -75,23 +76,23 @@ namespace luminous::render {
 #undef LUMINOUS_MAKE_AS_TYPE_MAT4X4
 
 
-    public:
-        ParamSet() {}
-        ParamSet(const nloJson &json):
-        _json(json) {
+        public:
+            ParamSet() {}
+            ParamSet(const nloJson &json):
+                    _json(json) {
 
-        }
+            }
 
-        void setJson(const nloJson &json) { _json = json; }
-        nloJson json() const { return _json; }
+            void setJson(const nloJson &json) { _json = json; }
+            nloJson json() const { return _json; }
 
-        [[nodiscard]] ParamSet get(const std::string &key) const {
-            return ParamSet(_json[key]);
-        }
+            [[nodiscard]] ParamSet get(const std::string &key) const {
+                return ParamSet(_json[key]);
+            }
 
-        [[nodiscard]] ParamSet at(uint idx) const {
-            return ParamSet(_json.at(idx));
-        }
+            [[nodiscard]] ParamSet at(uint idx) const {
+                return ParamSet(_json.at(idx));
+            }
 
 #define LUMINOUS_MAKE_AS_TYPE_SCALAR(type) [[nodiscard]] type as_##type(type val = 0) const {                   \
             try {                                                                                               \
@@ -142,21 +143,21 @@ namespace luminous::render {
             } \
         }
 
-        LUMINOUS_MAKE_AS_TYPE_MAT3X3(float)
-        LUMINOUS_MAKE_AS_TYPE_MAT4X4(float)
+            LUMINOUS_MAKE_AS_TYPE_MAT3X3(float)
+            LUMINOUS_MAKE_AS_TYPE_MAT4X4(float)
 
-        LUMINOUS_MAKE_AS_TYPE_SCALAR(float)
-        LUMINOUS_MAKE_AS_TYPE_SCALAR(uint)
-        LUMINOUS_MAKE_AS_TYPE_SCALAR(int)
+            LUMINOUS_MAKE_AS_TYPE_SCALAR(float)
+            LUMINOUS_MAKE_AS_TYPE_SCALAR(uint)
+            LUMINOUS_MAKE_AS_TYPE_SCALAR(int)
 
 #define LUMINOUS_MAKE_AS_TYPE_VEC(type)  \
         LUMINOUS_MAKE_AS_TYPE_VEC2(type) \
         LUMINOUS_MAKE_AS_TYPE_VEC3(type) \
         LUMINOUS_MAKE_AS_TYPE_VEC4(type)
 
-        LUMINOUS_MAKE_AS_TYPE_VEC(int)
-        LUMINOUS_MAKE_AS_TYPE_VEC(uint)
-        LUMINOUS_MAKE_AS_TYPE_VEC(float)
+            LUMINOUS_MAKE_AS_TYPE_VEC(int)
+            LUMINOUS_MAKE_AS_TYPE_VEC(uint)
+            LUMINOUS_MAKE_AS_TYPE_VEC(float)
 
 
 #undef LUMINOUS_MAKE_AS_TYPE_SCALAR
@@ -166,6 +167,8 @@ namespace luminous::render {
 #undef LUMINOUS_MAKE_AS_TYPE_VEC4
 #undef LUMINOUS_MAKE_AS_TYPE_MAT3X3
 #undef LUMINOUS_MAKE_AS_TYPE_MAT4X4
-    };
+        };
+    }
+
 
 }
