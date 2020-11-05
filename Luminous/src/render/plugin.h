@@ -11,6 +11,7 @@
 #include <functional>
 #include <memory>
 #include <iostream>
+#include "util/param_set.h"
 
 #include <core/platform.h>
 #include <core/concepts.h>

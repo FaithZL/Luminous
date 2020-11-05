@@ -1,0 +1,1 @@
+luminous_render_add_plugin(cpu_rasterizer CATEGORY sampler SOURCES cpu_rasterizer.cpp)
