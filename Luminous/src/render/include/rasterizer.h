@@ -14,10 +14,11 @@ namespace luminous::render {
     using luminous::compute::Device;
     using luminous::compute::dsl::Expr;
 
+    template<typename TexType>
     class Rasterizer : public Plugin {
 
     private:
-        std::map<string_view, float *> _texture;
+        std::map<string_view, Texture<TexType>> _texture;
 
     public:
         Rasterizer(Device *device, const ParamSet &params)
@@ -25,7 +26,7 @@ namespace luminous::render {
 
         }
 
-        virtual void set_texture(const string_view key) = 0;
+        virtual void set_texture(const string_view key, const Texture<TexType> &tex) = 0;
 
     };
 }
