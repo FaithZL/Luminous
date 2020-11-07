@@ -15,18 +15,24 @@ namespace luminous {
             nloJson _json;
         private:
 
+
 #define LUMINOUS_MAKE_AS_TYPE_FUNC(type) [[nodiscard]] type _as_##type() const noexcept {   \
             return static_cast<type>(_json);                                                \
         }
 
 #define LUMINOUS_MAKE_AS_TYPE_VEC2(type) [[nodiscard]] type##2 _as_##type##2() const noexcept { \
             return make_##type##2(this->at(0).as_##type(), this->at(1).as_##type());                                    \
-        }
+        }                                                                                       \
+
 #define LUMINOUS_MAKE_AS_TYPE_VEC3(type) [[nodiscard]] type##3 _as_##type##3() const noexcept { \
-            return make_##type##3(this->at(0).as_##type(), this->at(1).as_##type(), this->at(2).as_##type());                       \
+            return make_##type##3(this->at(0).as_##type(), this->at(1).as_##type(), this->at(2).as_##type());     \
         }
 #define LUMINOUS_MAKE_AS_TYPE_VEC4(type) [[nodiscard]] type##4 _as_##type##4() const noexcept { \
             return make_##type##4(this->at(0).as_##type(), this->at(1).as_##type(), this->at(2).as_##type(), this->at(3).as_##type());          \
+        }                                                                                       \
+        template<typename T, std::enable_if_t<std::is_same_v<T, type##4>, int> = 0>            \
+        T _as() const {                                                                     \
+            return _as_##type##4();                                                            \
         }
 #define LUMINOUS_MAKE_AS_TYPE_VEC(type)   \
         LUMINOUS_MAKE_AS_TYPE_VEC2(type)  \
@@ -101,7 +107,12 @@ namespace luminous {
                 LUMINOUS_WARNING("Error occurred while parsing parameter, using default value: \"", val, "\""); \
                 return val;                                                                                     \
             }                                                                                                   \
-        }
+        }                                                                                                       \
+        template<typename T, std::enable_if_t<std::is_same_v<T, type>, int> = 0>            \
+        T as() const {                                                                     \
+            return as_##type();                                                            \
+        }\
+
 #define LUMINOUS_MAKE_AS_TYPE_VEC2(type) [[nodiscard]] type##2 as_##type##2(type##2 val = make_##type##2()) const {      \
             try {                                                                                                        \
                 return _as_##type##2();                                                                                  \
@@ -109,6 +120,10 @@ namespace luminous {
                 LUMINOUS_WARNING("Error occurred while parsing parameter, using default value: \"(", val.to_string() , ")\""); \
                 return val;                                                                                              \
             }                                                                                                            \
+        } \
+        template<typename T, std::enable_if_t<std::is_same_v<T, type##2>, int> = 0>            \
+        T as() const {                                                                     \
+            return as_##type##2();                                                            \
         }
 #define LUMINOUS_MAKE_AS_TYPE_VEC3(type) [[nodiscard]] type##3 as_##type##3(type##3 val = make_##type##3()) const {        \
             try {                                                                                                          \
@@ -117,6 +132,10 @@ namespace luminous {
                 LUMINOUS_WARNING("Error occurred while parsing parameter, using default value: \"(", val.to_string() , ")\""); \
                 return val;                                                                                              \
             }                                                                                                            \
+        } \
+        template<typename T, std::enable_if_t<std::is_same_v<T, type##3>, int> = 0>            \
+        T as() const {                                                                     \
+            return as_##type##3();                                                            \
         }
 #define LUMINOUS_MAKE_AS_TYPE_VEC4(type) [[nodiscard]] type##4 as_##type##4(type##4 val = make_##type##4()) const {        \
             try {                                                                                                          \
@@ -125,6 +144,10 @@ namespace luminous {
                 LUMINOUS_WARNING("Error occurred while parsing parameter, using default value: \"(", val.to_string() , ")\""); \
                 return val;                                                                                              \
             }                                                                                                            \
+        } \
+        template<typename T, std::enable_if_t<std::is_same_v<T, type##4>, int> = 0>            \
+        T as() const {                                                                     \
+            return as_##type##4();                                                            \
         }
 #define LUMINOUS_MAKE_AS_TYPE_MAT3X3(type) [[nodiscard]] type##3x3 as_##type##3x3(type##3x3 val = make_##type##3x3()) const noexcept { \
             try {                                                                                                                       \

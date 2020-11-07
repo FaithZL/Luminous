@@ -1,0 +1,2 @@
+luminous_render_add_plugin(constant CATEGORY texture SOURCES constant_texture.cpp)
+luminous_render_add_plugin(bitmap CATEGORY texture SOURCES bitmap.cpp)

@@ -4,7 +4,6 @@
 
 #include <render/include/sampler.h>
 #include <compute/dsl.h>
-#
 
 namespace luminous::render::sampler {
 

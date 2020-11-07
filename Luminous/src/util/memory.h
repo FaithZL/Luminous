@@ -175,10 +175,10 @@ namespace luminous {
              *
              * 假设
              * logBlockSize = 2 ，block_size = 4 每个块的长宽均为4
-             * _uRes = 8
-             * _vRes = 8
-             * _uBlocks = round_up(_uRes) >> logBlockSize = 2
-             * nAlloc = round_up(_uRes) * round_up(_vRes) = 64 需要申请64个单位的内存空间
+             * _u_res = 8
+             * _v_res = 8
+             * _u_blocks = round_up(_u_res) >> logBlockSize = 2
+             * nAlloc = round_up(_u_res) * round_up(_v_res) = 64 需要申请64个单位的内存空间
              *
              * 如上参数，内存排布如下，上部分是实际内存中连续地址0-63，下部分是经过下标(u,v)重新映射之后索引的地址，
              * 可以看到，经过重新映射之后,(0,0)与(1,0)是相邻的，并且(0,0)与(0,1)距离不远，
@@ -223,27 +223,27 @@ namespace luminous {
 
             private:
                 T *_data;
-                const int _uRes, _vRes, _uBlocks;
+                const int _u_res, _v_res, _u_blocks;
 
             public:
                 /**
                  * 分配一段连续的内存块，用uv参数重排二维数组的索引
                  */
-                BlockedArray(int uRes, int vRes, const T *d = nullptr)
-                        : _uRes(uRes),
-                          _vRes(vRes),
-                          _uBlocks(round_up(uRes) >> logBlockSize) {
+                BlockedArray(int u_res, int v_res, const T *d = nullptr)
+                        : _u_res(u_res),
+                          _v_res(v_res),
+                          _u_blocks(round_up(u_res) >> logBlockSize) {
                     // 先向上取到2^logBlockSize
-                    int nAlloc = round_up(_uRes) * round_up(_vRes);
+                    int nAlloc = round_up(_u_res) * round_up(_v_res);
                     _data = alloc_aligned<T>(nAlloc);
                     for (int i = 0; i < nAlloc; ++i) {
                         // placement new，在指定地址上调用构造函数
                         new (&_data[i]) T();
                     }
                     if (d) {
-                        for (int v = 0; v < _vRes; ++v){
-                            for (int u = 0; u < _uRes; ++u) {
-                                (*this)(u, v) = d[v * _uRes + u];
+                        for (int v = 0; v < _v_res; ++v){
+                            for (int u = 0; u < _u_res; ++u) {
+                                (*this)(u, v) = d[v * _u_res + u];
                             }
                         }
                     }
@@ -264,15 +264,15 @@ namespace luminous {
                 }
 
                 int u_size() const {
-                    return _uRes;
+                    return _u_res;
                 }
 
                 int v_size() const {
-                    return _vRes;
+                    return _v_res;
                 }
 
                 ~BlockedArray() {
-                    for (int i = 0; i < _uRes * _vRes; ++i) {
+                    for (int i = 0; i < _u_res * _v_res; ++i) {
                         _data[i].~T();
                     }
                     free_aligned(_data);
@@ -300,7 +300,7 @@ namespace luminous {
                     int ou = offset(u);
                     int ov = offset(v);
                     // 小block的偏移
-                    int offset = block_size() * block_size() * (_uBlocks * bv + bu);
+                    int offset = block_size() * block_size() * (_u_blocks * bv + bu);
                     // 小block内的偏移
                     offset += block_size() * ov + ou;
                     return offset;
@@ -317,8 +317,8 @@ namespace luminous {
                 }
 
                 void get_linear_array(T *a) const {
-                    for (int v = 0; v < _vRes; ++v) {
-                        for (int u = 0; u < _uRes; ++u) {
+                    for (int v = 0; v < _v_res; ++v) {
+                        for (int u = 0; u < _u_res; ++u) {
                             *a++ = (*this)(u, v);
                         }
                     }
