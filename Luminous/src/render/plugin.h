@@ -66,7 +66,7 @@ LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME_T(Texture,float4)
 #undef LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME_T
 
     using luminous::compute::Device;
-
+    using namespace luminous;
     class Plugin : public Noncopyable {
     private:
         Device *_device{nullptr};
@@ -90,6 +90,30 @@ LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME_T(Texture,float4)
         static constexpr auto plugin_base_class_name() noexcept {
             return detail::plugin_base_class_name(static_cast<PluginBaseClass<T> *>(nullptr));
         }
+
+#define LUMINOUS_PLUGIN_CREATE_TYPE(type)                                                       \
+        template<typename T>                                                                    \
+        [[nodiscard]] static std::unique_ptr<T> create_##type(                                    \
+                Device *device,                                                                 \
+                std::string_view derived_name_pascal_case,                                      \
+                const ParamSet &params) {                                                       \
+                                                                                                \
+            auto base_name = pascal_to_snake_case(plugin_base_class_name<T>());                 \
+            auto derived_name = pascal_to_snake_case(derived_name_pascal_case);                 \
+            auto plugin_dir = device->context().runtime_path("bin") / "plugins";                \
+            using PluginCreator = T *(Device *, const ParamSet &);                              \
+            auto moduleName = serialize("luminous-", base_name, "-", derived_name);             \
+            auto creator = device->context().load_dynamic_function<PluginCreator>(plugin_dir,   \
+                                                                                  moduleName,   \
+                                                                                  #type);\
+            return std::unique_ptr<T>{creator(device, params)};                                 \
+        }
+
+        LUMINOUS_PLUGIN_CREATE_TYPE(float)
+        LUMINOUS_PLUGIN_CREATE_TYPE(float3)
+        LUMINOUS_PLUGIN_CREATE_TYPE(float4)
+
+#undef LUMINOUS_PLUGIN_CREATE_TYPE
 
         template<typename T>
         [[nodiscard]] static std::unique_ptr<T> create(
@@ -117,4 +141,10 @@ LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME_T(Texture,float4)
         LUMINOUS_INFO("Creating instance of class ", #PluginClass, ", category: ", ::luminous::render::Plugin::plugin_base_class_name<PluginClass>()); \
         return new PluginClass{device, params};                                                                                                        \
     }
-    
+
+#define LUMINOUS_EXPORT_PLUGIN_CREATOR_T(PluginClass,T)                                                                                                    \
+    extern "C" LUMINOUS_EXPORT ::luminous::render::Plugin *T(::luminous::compute::Device *device,                                                 \
+                                                            const luminous::utility::ParamSet &params) {                                                \
+        LUMINOUS_INFO("Creating instance of class ", #PluginClass, ", category: ", ::luminous::render::Plugin::plugin_base_class_name<PluginClass>()); \
+        return new PluginClass{device, params};                                                                                                        \
+    }
