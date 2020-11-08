@@ -20,12 +20,17 @@ namespace luminous::render::texture {
         ConstantTexture(Device * device, const ParamSet &param)
         : Texture<T>(device, param) {
             auto value = param.get("value");
-
+            _val = value.as<T>();
         }
 
+        [[nodiscard]] T eval(const float2 &uv) const override {
+            return _val;
+        }
 
-        virtual T eval(const float2 &uv) = 0;
-
-        virtual T eval_gradient(const float2 &uv) = 0;
+        [[nodiscard]] T eval_gradient(const float2 &uv) const override {
+            return T(0.0f);
+        }
     };
 }
+
+LUMINOUS_EXPORT_PLUGIN_CREATOR(luminous::render::texture::ConstantTexture<luminous::float3>);

@@ -18,8 +18,8 @@ namespace luminous::render {
 
         }
 
-        virtual T eval(const float2 &uv) = 0;
+        [[nodiscard]] virtual T eval(const float2 &uv) const = 0;
 
-        virtual T eval_gradient(const float2 &uv) = 0;
+        [[nodiscard]] virtual T eval_gradient(const float2 &uv) const = 0;
     };
 }

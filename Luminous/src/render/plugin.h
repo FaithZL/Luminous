@@ -35,6 +35,18 @@ namespace luminous::render {
         }                                                                                 \
     }
 
+#define LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME_T(BaseClass,U)                                 \
+    template<typename N>                                                                                \
+    class BaseClass;                                                                                    \
+    namespace detail {                                                                                  \
+        template<typename T, std::enable_if_t<std::is_base_of_v<BaseClass<U>, T>, int> = 0>             \
+        auto plugin_base_class_match(T *) { return static_cast<BaseClass<U> *>(nullptr); }              \
+        template<typename T, std::enable_if_t<std::is_same_v<BaseClass<U>, T>, int> = 0>                \
+        constexpr std::string_view plugin_base_class_name(T *) {                                        \
+            using namespace std::string_view_literals;                                                  \
+            return #BaseClass""sv;                                                                      \
+        }                                                                                               \
+    }
 
 LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME(Filter)
 LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME(Film)
@@ -46,7 +58,12 @@ LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME(Integrator)
 LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME(Sampler)
 LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME(Light)
 
+LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME_T(Texture,float)
+LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME_T(Texture,float3)
+LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME_T(Texture,float4)
+
 #undef LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME
+#undef LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME_T
 
     using luminous::compute::Device;
 
@@ -100,3 +117,4 @@ LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME(Light)
         LUMINOUS_INFO("Creating instance of class ", #PluginClass, ", category: ", ::luminous::render::Plugin::plugin_base_class_name<PluginClass>()); \
         return new PluginClass{device, params};                                                                                                        \
     }
+    
