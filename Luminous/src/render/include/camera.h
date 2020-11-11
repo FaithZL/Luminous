@@ -7,6 +7,7 @@
 #include <render/plugin.h>
 #include <compute/dsl.h>
 #include <compute/pipeline.h>
+#include "transform.h"
 
 namespace luminous::render {
     using compute::Ray;
@@ -43,6 +44,18 @@ namespace luminous::render {
                 : Plugin{d, params} {
 
         }
+
+        [[nodiscard]] Film *film() const noexcept { return _film.get(); }
+        [[nodiscard]] Filter *filter() const noexcept { return _filter.get(); }
+        [[nodiscard]] Transform *transform() const noexcept { return _transform.get(); }
+
+        [[nodiscard]] const BufferView<float2> &pixel_position_buffer() const noexcept { return _pixel_position_buffer; }
+        [[nodiscard]] const BufferView<float> &pixel_weight_buffer() const noexcept { return _pixel_weight_buffer; }
+        [[nodiscard]] BufferView<Ray> &ray_buffer() noexcept { return _camera_ray_buffer; }
+        [[nodiscard]] BufferView<float3> &throughput_buffer() noexcept { return _throughput_buffer; }
+
+        [[nodiscard]] std::function<void(Pipeline &pipeline)> generate_rays(float time, Sampler &sampler);
+        [[nodiscard]] bool is_static() const noexcept { return _transform == nullptr || _transform->is_static(); }
     };
 }
 

@@ -33,5 +33,11 @@ namespace luminous::render::texture {
     };
 }
 
-LUMINOUS_EXPORT_PLUGIN_CREATOR_T(luminous::render::texture::ConstantTexture<luminous::float3>, float3);
-LUMINOUS_EXPORT_PLUGIN_CREATOR_T(luminous::render::texture::ConstantTexture<luminous::float4>, float4);
+
+#ifdef FLOAT3
+    LUMINOUS_EXPORT_PLUGIN_CREATOR(luminous::render::texture::ConstantTexture<luminous::float3>)
+#endif
+
+#ifdef FLOAT4
+    LUMINOUS_EXPORT_PLUGIN_CREATOR(luminous::render::texture::ConstantTexture<luminous::float4>)
+#endif

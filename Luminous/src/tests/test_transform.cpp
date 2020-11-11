@@ -39,6 +39,8 @@ int main(int argc, char *argv[]) {
 
     auto trs = Plugin::create<Transform>(device.get(), "trs", param);
 
+//    auto tex = Plugin::create<luminous::render::Texture<luminous::float3>>(device.get(), "constant_float3", param);
+
     cout << luminous::scaling(trs->scaling()).to_string() << endl;
     auto q = trs->rotation();
     cout << luminous::quaternion_to_matrix(q).to_string();
