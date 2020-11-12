@@ -6,6 +6,7 @@
 
 #include <compute/dsl_syntax.h>
 #include "core/header.h"
+#include "render/plugin.h"
 
 namespace luminous {
     inline namespace utility {
@@ -165,6 +166,23 @@ namespace luminous {
                 return val; \
             } \
         }
+
+            template<typename BaseClass>
+            [[nodiscard]] auto parse_or_null() const {
+                std::shared_ptr<BaseClass> p = nullptr;
+                try {
+                    p = parse<BaseClass>();
+                } catch (const std::runtime_error &e) {
+                    LUMINOUS_WARNING("Error occurred while parsing parameter, returning null");
+                }
+                return p;
+            }
+
+            template<typename BaseClass>
+            [[nodiscard]] std::shared_ptr<BaseClass> parse() const {
+
+//                return Plugin::create<BaseClass>(&_parser->device(), "", *this);
+            }
 
             LUMINOUS_MAKE_AS_TYPE_MAT3X3(float)
             LUMINOUS_MAKE_AS_TYPE_MAT4X4(float)
