@@ -1,0 +1,1 @@
+luminous_render_add_plugin(box CATEGORY filter SOURCES box.cpp)
