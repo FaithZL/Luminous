@@ -6,14 +6,17 @@
 
 #include <compute/dsl_syntax.h>
 #include "core/header.h"
-#include "render/plugin.h"
+#include "compute/device.h"
 
 namespace luminous {
+    using luminous::compute::Device;
     inline namespace utility {
         using namespace std;
         class ParamSet {
         private:
             nloJson _json;
+            string _key;
+            const Device * _device;
         private:
 
 
@@ -85,8 +88,12 @@ namespace luminous {
 
         public:
             ParamSet() {}
-            ParamSet(const nloJson &json):
-                    _json(json) {
+            ParamSet(const nloJson &json,
+                     const string &key = "",
+                     const Device *device = nullptr):
+                    _json(json),
+                    _key(key),
+                    _device(device) {
 
             }
 
@@ -94,11 +101,11 @@ namespace luminous {
             nloJson json() const { return _json; }
 
             [[nodiscard]] ParamSet get(const std::string &key) const {
-                return ParamSet(_json[key]);
+                return ParamSet(_json[key], key, _device);
             }
 
             [[nodiscard]] ParamSet at(uint idx) const {
-                return ParamSet(_json.at(idx));
+                return ParamSet(_json.at(idx), "", _device);
             }
 
 #define LUMINOUS_MAKE_AS_TYPE_SCALAR(type) [[nodiscard]] type as_##type(type val = 0) const {                   \
@@ -179,10 +186,7 @@ namespace luminous {
             }
 
             template<typename BaseClass>
-            [[nodiscard]] std::shared_ptr<BaseClass> parse() const {
-
-//                return Plugin::create<BaseClass>(&_parser->device(), "", *this);
-            }
+            [[nodiscard]] std::shared_ptr<BaseClass> parse() const;
 
             LUMINOUS_MAKE_AS_TYPE_MAT3X3(float)
             LUMINOUS_MAKE_AS_TYPE_MAT4X4(float)
