@@ -42,7 +42,7 @@ namespace luminous::render {
     public:
         Camera(Device *d, const ParamSet &params)
                 : Plugin{d, params} {
-
+            _transform = params.get("transform").parse_or_null<Transform>();
         }
 
         [[nodiscard]] Film *film() const noexcept { return _film.get(); }

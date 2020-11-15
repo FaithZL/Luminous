@@ -9,6 +9,17 @@
 
 namespace luminous::render {
     inline namespace sampling {
+        struct DiscreteSample {
+            uint index;
+            float pdf;
+        };
+    }
+}
+
+LUMINOUS_STRUCT(luminous::render::sampling::DiscreteSample, index, pdf)
+
+namespace luminous::render {
+    inline namespace sampling {
 
         using compute::dsl::Var;
         using compute::dsl::Expr;
@@ -150,5 +161,27 @@ namespace luminous::render {
         inline Expr<float> mis_weight(Expr<float> f_pdf, Expr<float> g_pdf) {
             return mis_weight(1, f_pdf, 1, g_pdf);
         }
+
+        template<typename Table>
+        inline Expr<DiscreteSample> sample_discrete(Table &&cdf, Var<uint> first, Var<uint> last, Var<float> u) noexcept {
+            Var first_copy = first;
+            Var count = last - first;
+            While (count > 0u) {
+                Var step = count / 2u;
+                Var it = first + step;
+                Var pred = cdf[it] < u;
+                first = select(pred, it + 1u, first);
+                count = select(pred, count - (step + 1u), step);
+            };
+            Var<DiscreteSample> sample;
+            sample.index = min(first, last - 1u);
+            If (sample.index == first_copy) {
+                sample.pdf = cdf[sample.index];
+            } Else {
+                sample.pdf = cdf[sample.index] - cdf[sample.index - 1u];
+            };
+            return sample;
+        }
+
     }
 }

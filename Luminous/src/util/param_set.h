@@ -116,7 +116,7 @@ namespace luminous {
                 return val;                                                                                     \
             }                                                                                                   \
         }                                                                                                       \
-        template<typename T, std::enable_if_t<std::is_same_v<T, type>, int> = 0>            \
+        template<typename T, std::enable_if_t<std::is_same_v<T, type>, int> = 0>           \
         T as() const {                                                                     \
             return as_##type();                                                            \
         }\
