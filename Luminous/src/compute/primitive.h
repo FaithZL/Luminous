@@ -12,6 +12,7 @@ namespace luminous::compute {
         float3 position;
         float3 normal;
         float2 uv;
+        float2 uv2;
     };
 
     struct TriangleHandle {
