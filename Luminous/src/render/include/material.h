@@ -3,3 +3,11 @@
 //
 
 #pragma once
+
+#include "render/plugin.h"
+
+namespace luminous::render {
+    class Material : public Plugin {
+
+    };
+}

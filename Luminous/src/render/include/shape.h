@@ -20,7 +20,7 @@ namespace luminous::render {
     protected:
         std::vector<Vertex> _vertices;
         std::vector<TriangleHandle> _triangles;
-//        std::shared_ptr<Material> _material;
+        std::shared_ptr<Material> _material;
         std::shared_ptr<Transform> _transform;
         std::vector<std::shared_ptr<Shape>> _children;
     };

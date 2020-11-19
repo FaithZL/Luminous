@@ -1,2 +1,3 @@
 luminous_render_add_plugin(box CATEGORY filter SOURCES box.cpp)
 luminous_render_add_plugin(triangle CATEGORY filter SOURCES triangle.cpp)
+luminous_render_add_plugin(gaussian CATEGORY filter SOURCES gaussian.cpp)
