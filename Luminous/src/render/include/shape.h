@@ -22,6 +22,38 @@ namespace luminous::render {
         std::vector<TriangleHandle> _triangles;
         std::shared_ptr<Material> _material;
         std::shared_ptr<Transform> _transform;
-        std::vector<std::shared_ptr<Shape>> _children;
+        void _exception_if_cleared() const { LUMINOUS_EXCEPTION_IF(_cleared, "Invalid operation on cleared shape."); }
+
+    private:
+        bool _cleared{false};
+
+    public:
+        Shape(Device *device, const ParamSet &params) noexcept
+                : Plugin{device, params},
+                  _material{params["material"].parse_or_null<Material>()},
+                  _transform{params["transform"].parse_or_null<Transform>()} {
+
+        }
+
+        [[nodiscard]] const std::vector<Vertex> &vertices() const {
+            _exception_if_cleared();
+            return _vertices;
+        }
+
+        [[nodiscard]] const std::vector<TriangleHandle> &triangles() const {
+            _exception_if_cleared();
+            return _triangles;
+        }
+
+        void clear_vertex_data() noexcept {  // to save some memory...
+            _vertices.clear();
+            _triangles.clear();
+            _vertices.shrink_to_fit();
+            _triangles.shrink_to_fit();
+            _cleared = true;
+        }
+
+        [[nodiscard]] Transform *transform() const noexcept { return _transform.get(); }
+        [[nodiscard]] Material *material() const noexcept { return _material.get(); }
     };
 }

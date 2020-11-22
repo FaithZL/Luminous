@@ -108,6 +108,14 @@ namespace luminous {
                 return ParamSet(_json.at(idx), "", _device);
             }
 
+            [[nodiscard]] ParamSet operator[](const std::string &key) const {
+                return ParamSet(_json[key], key, _device);
+            }
+
+            [[nodiscard]] ParamSet operator[](uint i) const {
+                return ParamSet(_json[i], "", _device);
+            }
+
 #define LUMINOUS_MAKE_AS_TYPE_SCALAR(type) [[nodiscard]] type as_##type(type val = 0) const {                   \
             try {                                                                                               \
                 return _as_##type();                                                                            \

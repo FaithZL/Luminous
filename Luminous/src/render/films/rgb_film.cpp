@@ -3,3 +3,13 @@
 //
 
 #include "render/include/film.h"
+
+namespace luminous::render::film {
+
+    using namespace compute;
+    using namespace compute::dsl;
+
+    class RGBFilm : public Film {
+
+    };
+}
