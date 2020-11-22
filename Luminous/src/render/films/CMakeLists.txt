@@ -1,0 +1,1 @@
+luminous_render_add_plugin(rgb_film CATEGORY film SOURCES rgb_film.cpp)

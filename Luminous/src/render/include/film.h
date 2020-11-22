@@ -33,6 +33,26 @@ namespace luminous::render {
         _resolution(params.get("resolution").as_uint2(make_uint2(500, 500))) {
 
         }
+
+        [[nodiscard]] uint2 resolution() const noexcept { return _resolution; }
+
+        [[nodiscard]] auto clear() {
+            return [this](Pipeline &pipeline) { _clear(pipeline); };
+        }
+
+        [[nodiscard]] auto accumulate_frame(const BufferView<float3> &radiance_buffer, const BufferView<float> &weight_buffer) {
+            return [this, &radiance_buffer, &weight_buffer](Pipeline &pipeline) {
+                _accumulate_frame(pipeline, radiance_buffer, weight_buffer);
+            };
+        }
+
+        [[nodiscard]] auto postprocess() {
+            return [this](Pipeline &pipeline) { _postprocess(pipeline); };
+        }
+
+        [[nodiscard]] auto save(std::filesystem::path path) {
+            return [this, path = std::move(path)](Pipeline &pipeline) { _save(pipeline, path); };
+        }
     };
 
 }
