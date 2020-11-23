@@ -202,6 +202,7 @@ namespace luminous {
             LUMINOUS_MAKE_AS_TYPE_SCALAR(float)
             LUMINOUS_MAKE_AS_TYPE_SCALAR(uint)
             LUMINOUS_MAKE_AS_TYPE_SCALAR(int)
+            LUMINOUS_MAKE_AS_TYPE_SCALAR(string)
 
 #define LUMINOUS_MAKE_AS_TYPE_VEC(type)  \
         LUMINOUS_MAKE_AS_TYPE_VEC2(type) \
