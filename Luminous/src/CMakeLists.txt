@@ -11,6 +11,8 @@ include_directories("${PROJECT_SOURCE_DIR}/thirdparty/spdlog/include")
 include_directories("${PROJECT_SOURCE_DIR}/thirdparty/cxxopts/include")
 include_directories("${PROJECT_SOURCE_DIR}/thirdparty/assimp/include")
 
+include_directories("${CMAKE_BINARY_DIR}/thirdparty/assimp/include")
+
 add_library(luminous-all INTERFACE)
 target_link_libraries(luminous-all INTERFACE luminous-core luminous-compute luminous-ext luminous-util)
 
