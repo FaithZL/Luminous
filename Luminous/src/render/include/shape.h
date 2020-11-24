@@ -16,22 +16,17 @@ namespace luminous::render {
     using compute::TriangleHandle;
     using compute::EntityHandle;
 
-    class Shape : public Plugin {
+    class Model : public Plugin {
     protected:
         std::vector<Vertex> _vertices;
         std::vector<TriangleHandle> _triangles;
-        std::shared_ptr<Material> _material;
-        std::shared_ptr<Transform> _transform;
         void _exception_if_cleared() const { LUMINOUS_EXCEPTION_IF(_cleared, "Invalid operation on cleared shape."); }
-
     private:
         bool _cleared{false};
-
     public:
-        Shape(Device *device, const ParamSet &params) noexcept
-                : Plugin{device, params},
-                  _material{params["material"].parse_or_null<Material>()},
-                  _transform{params["transform"].parse_or_null<Transform>()} {
+
+        Model(Device *device, const ParamSet &params) noexcept
+        : Plugin{device, params} {
 
         }
 
@@ -51,6 +46,31 @@ namespace luminous::render {
             _vertices.shrink_to_fit();
             _triangles.shrink_to_fit();
             _cleared = true;
+        }
+    };
+
+    class Shape : public Model {
+    protected:
+
+        std::shared_ptr<Material> _material;
+        std::shared_ptr<Transform> _transform;
+
+    public:
+        Shape(Device *device, const ParamSet &params) noexcept
+                : Model{device, params},
+                  _material{params["material"].parse_or_null<Material>()},
+                  _transform{params["transform"].parse_or_null<Transform>()} {
+
+        }
+
+        [[nodiscard]] const std::vector<Vertex> &vertices() const {
+            _exception_if_cleared();
+            return _vertices;
+        }
+
+        [[nodiscard]] const std::vector<TriangleHandle> &triangles() const {
+            _exception_if_cleared();
+            return _triangles;
         }
 
         [[nodiscard]] Transform *transform() const noexcept { return _transform.get(); }
