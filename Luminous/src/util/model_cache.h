@@ -10,7 +10,6 @@
 #include "render/include/light.h"
 #include "render/include/transform.h"
 #include "render/include/shape.h"
-#include <compute/dsl_syntax.h>
 
 namespace luminous {
     using namespace std;
@@ -20,6 +19,8 @@ namespace luminous {
     using luminous::render::Light;
     using luminous::compute::Vertex;
     using luminous::compute::TriangleHandle;
+
+
     inline namespace utility {
         class ModelCache {
         private:
@@ -27,22 +28,23 @@ namespace luminous {
 
             map<string, shared_ptr<Model>> _model_map;
 
-            shared_ptr<Shape> _create_shape(const string &fn,
+            [[nodiscard]] shared_ptr<Shape> _load_shape_from_file(const std::filesystem::path &path,
+                                                const Transform &transform,
+                                                std::vector<shared_ptr<Light>> &);
+
+
+
+        public:
+            static void load(const std::filesystem::path &path,
+                              std::vector<Vertex> &vertices,
+                              std::vector<TriangleHandle> &indices,
+                              uint subdiv_level);
+
+            [[nodiscard]] shared_ptr<Shape> load_shape(const std::filesystem::path &path,
                                             const Transform &transform,
                                             std::vector<shared_ptr<Light>> &);
 
-            static void _load(const std::filesystem::path &path,
-                              std::vector<Vertex> &vertices,
-                              std::vector<TriangleHandle> &indices,
-                              uint subdiv_level) noexcept;
-
-        public:
-
-            shared_ptr<Shape> get_shape(const string &fn,
-                                        const Transform &transform,
-                                        std::vector<shared_ptr<Light>> &);
-
-            static ModelCache * instance();
+            [[nodiscard]] static ModelCache * instance();
 
         };
     }

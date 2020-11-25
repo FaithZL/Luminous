@@ -47,6 +47,8 @@ namespace luminous::render {
             _triangles.shrink_to_fit();
             _cleared = true;
         }
+
+        friend class ModelCache;
     };
 
     class Shape : public Model {
