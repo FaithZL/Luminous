@@ -16,19 +16,21 @@ namespace luminous::render {
     using compute::TriangleHandle;
     using compute::EntityHandle;
 
-    class Model : public Plugin {
-    protected:
+    class Model {
+    private:
         std::vector<Vertex> _vertices;
         std::vector<TriangleHandle> _triangles;
-        void _exception_if_cleared() const { LUMINOUS_EXCEPTION_IF(_cleared, "Invalid operation on cleared shape."); }
-    private:
         bool _cleared{false};
     public:
-
-        Model(Device *device, const ParamSet &params) noexcept
-        : Plugin{device, params} {
-
+        void set_vertices(std::vector<Vertex> vertices) {
+            _vertices = std::move(vertices);
         }
+
+        void set_triangles(std::vector<TriangleHandle> triangles) {
+            _triangles = std::move(triangles);
+        }
+
+        void _exception_if_cleared() const { LUMINOUS_EXCEPTION_IF(_cleared, "Invalid operation on cleared shape."); }
 
         [[nodiscard]] const std::vector<Vertex> &vertices() const {
             _exception_if_cleared();
@@ -47,32 +49,31 @@ namespace luminous::render {
             _triangles.shrink_to_fit();
             _cleared = true;
         }
-
-        friend class ModelCache;
     };
 
-    class Shape : public Model {
+    class Shape : public Plugin {
     protected:
 
         std::shared_ptr<Material> _material;
         std::shared_ptr<Transform> _transform;
+        std::shared_ptr<Model> _model;
 
     public:
         Shape(Device *device, const ParamSet &params) noexcept
-                : Model{device, params},
+                : Plugin{device, params},
                   _material{params["material"].parse_or_null<Material>()},
                   _transform{params["transform"].parse_or_null<Transform>()} {
 
         }
 
         [[nodiscard]] const std::vector<Vertex> &vertices() const {
-            _exception_if_cleared();
-            return _vertices;
+            _model->_exception_if_cleared();
+            return _model->vertices();
         }
 
         [[nodiscard]] const std::vector<TriangleHandle> &triangles() const {
-            _exception_if_cleared();
-            return _triangles;
+            _model->_exception_if_cleared();
+            return _model->triangles();
         }
 
         [[nodiscard]] Transform *transform() const noexcept { return _transform.get(); }

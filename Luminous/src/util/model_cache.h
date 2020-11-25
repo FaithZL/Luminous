@@ -14,12 +14,8 @@
 namespace luminous {
     using namespace std;
     using luminous::render::Model;
-    using luminous::render::Shape;
-    using luminous::render::Transform;
-    using luminous::render::Light;
     using luminous::compute::Vertex;
     using luminous::compute::TriangleHandle;
-
 
     inline namespace utility {
         class ModelCache {
@@ -28,11 +24,9 @@ namespace luminous {
 
             map<string, shared_ptr<Model>> _model_map;
 
-            [[nodiscard]] shared_ptr<Shape> _load_shape_from_file(const std::filesystem::path &path,
-                                                const Transform &transform,
-                                                std::vector<shared_ptr<Light>> &);
-
-
+            bool inline is_contain(const std::string &path) const {
+                return _model_map.find(path) != _model_map.end();
+            }
 
         public:
             static void load(const std::filesystem::path &path,
@@ -40,9 +34,8 @@ namespace luminous {
                               std::vector<TriangleHandle> &indices,
                               uint subdiv_level);
 
-            [[nodiscard]] shared_ptr<Shape> load_shape(const std::filesystem::path &path,
-                                            const Transform &transform,
-                                            std::vector<shared_ptr<Light>> &);
+            [[nodiscard]] static shared_ptr<Model> get_model(const std::string &path);
+
 
             [[nodiscard]] static ModelCache * instance();
 

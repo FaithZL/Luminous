@@ -12,9 +12,6 @@
 namespace luminous {
     using namespace std;
     using luminous::render::Model;
-    using luminous::render::Shape;
-    using luminous::render::Transform;
-    using luminous::render::Light;
     using luminous::compute::Vertex;
     using luminous::compute::TriangleHandle;
     ModelCache * ModelCache::s_model_cache = nullptr;
@@ -27,10 +24,19 @@ namespace luminous {
             return s_model_cache;
         }
 
-        shared_ptr<Shape> ModelCache::load_shape(const std::filesystem::path &path,
-                                                 const Transform &transform,
-                                                 std::vector<shared_ptr<Light>> &) {
-            
+        shared_ptr<Model> ModelCache::get_model(const std::string &path) {
+            auto self = instance();
+            if (!self->is_contain(path)) {
+                auto ret = make_shared<Model>();
+                self->_model_map[path] = ret;
+                std::vector<Vertex> vertices;
+                std::vector<TriangleHandle> indices;
+                load(path, vertices, indices, 0);
+                ret->set_vertices(move(vertices));
+                ret->set_triangles(move(indices));
+                return ret;
+            }
+            return self->_model_map[path];
         }
 
         void ModelCache::load(const std::filesystem::path &path,
@@ -107,12 +113,5 @@ namespace luminous {
                 }
             }
         }
-
-        shared_ptr<Shape> ModelCache::_load_shape_from_file(const std::filesystem::path &path,
-                                                const Transform &transform,
-                                                std::vector<shared_ptr<Light>> &) {
-
-        }
-
     }
 }
