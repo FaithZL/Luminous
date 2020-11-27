@@ -16,7 +16,7 @@ namespace luminous::render {
     using compute::TriangleHandle;
     using compute::EntityHandle;
 
-    class Model {
+    class Mesh {
     private:
         std::vector<Vertex> _vertices;
         std::vector<TriangleHandle> _triangles;
@@ -51,29 +51,19 @@ namespace luminous::render {
         }
     };
 
+
     class Shape : public Plugin {
     protected:
 
         std::shared_ptr<Material> _material;
         std::shared_ptr<Transform> _transform;
-        std::shared_ptr<Model> _model;
 
     public:
         Shape(Device *device, const ParamSet &params) noexcept
-                : Plugin{device, params},
-                  _material{params["material"].parse_or_null<Material>()},
-                  _transform{params["transform"].parse_or_null<Transform>()} {
+        : Plugin{device, params},
+        _material{params["material"].parse_or_null<Material>()},
+        _transform{params["transform"].parse_or_null<Transform>()} {
 
-        }
-
-        [[nodiscard]] const std::vector<Vertex> &vertices() const {
-            _model->_exception_if_cleared();
-            return _model->vertices();
-        }
-
-        [[nodiscard]] const std::vector<TriangleHandle> &triangles() const {
-            _model->_exception_if_cleared();
-            return _model->triangles();
         }
 
         [[nodiscard]] Transform *transform() const noexcept { return _transform.get(); }

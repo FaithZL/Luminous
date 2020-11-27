@@ -13,7 +13,7 @@
 
 namespace luminous {
     using namespace std;
-    using luminous::render::Model;
+    using luminous::render::Mesh;
     using luminous::compute::Vertex;
     using luminous::compute::TriangleHandle;
 
@@ -22,19 +22,28 @@ namespace luminous {
         private:
             static ModelCache * s_model_cache;
 
-            map<string, shared_ptr<Model>> _model_map;
 
-            bool inline is_contain(const std::string &path) const {
-                return _model_map.find(path) != _model_map.end();
+            map<string, std::vector<shared_ptr<Mesh>>> _meshes_map;
+
+            bool inline is_contain(const std::string &key) const {
+                return _meshes_map.find(key) != _meshes_map.end();
+            }
+
+            static string cal_key(const string &path, uint subdiv_level) {
+                return string_printf("%s_subdiv_%u", path.c_str(), subdiv_level);
             }
 
         public:
-            static void load(const std::filesystem::path &path,
-                              std::vector<Vertex> &vertices,
-                              std::vector<TriangleHandle> &indices,
-                              uint subdiv_level);
 
-            [[nodiscard]] static shared_ptr<Model> get_model(const std::string &path);
+
+//            static void load(const std::filesystem::path &path,
+//                              std::vector<Vertex> &vertices,
+//                              std::vector<TriangleHandle> &indices,
+//                              uint subdiv_level);
+
+//            static std::vector<shared_ptr<Mesh>>
+
+            [[nodiscard]] static std::vector<shared_ptr<Mesh>> get_meshes(const std::string &path, uint subdiv_level);
 
 
             [[nodiscard]] static ModelCache * instance();
