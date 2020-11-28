@@ -22,29 +22,23 @@ namespace luminous {
         private:
             static ModelCache * s_model_cache;
 
-
             map<string, std::vector<shared_ptr<Mesh>>> _meshes_map;
 
-            bool inline is_contain(const std::string &key) const {
+            [[nodiscard]] static std::vector<shared_ptr<Mesh>> load_meshes(const std::string &path,
+                                                                           uint subdiv_level);
+
+            [[nodiscard]] bool inline is_contain(const std::string &key) const {
                 return _meshes_map.find(key) != _meshes_map.end();
             }
 
-            static string cal_key(const string &path, uint subdiv_level) {
+            [[nodiscard]] static string cal_key(const string &path, uint subdiv_level) {
                 return string_printf("%s_subdiv_%u", path.c_str(), subdiv_level);
             }
 
         public:
 
-
-//            static void load(const std::filesystem::path &path,
-//                              std::vector<Vertex> &vertices,
-//                              std::vector<TriangleHandle> &indices,
-//                              uint subdiv_level);
-
-//            static std::vector<shared_ptr<Mesh>>
-
-            [[nodiscard]] static std::vector<shared_ptr<Mesh>> get_meshes(const std::string &path, uint subdiv_level);
-
+            [[nodiscard]] static const std::vector<shared_ptr<Mesh>>& get_meshes(const std::string &path,
+                                                                                 uint subdiv_level);
 
             [[nodiscard]] static ModelCache * instance();
 
