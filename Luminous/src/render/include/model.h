@@ -15,25 +15,17 @@ namespace luminous::render {
     using compute::TriangleHandle;
     using compute::EntityHandle;
 
-    class Model : public Plugin {
+    class MeshesCache {
     private:
-        shared_ptr<Material> _material;
-        std::vector<Mesh> _meshes;
-    public:
+        static MeshesCache * s_meshes_cache;
 
-    };
+        map<string, std::vector<shared_ptr<Mesh>>> _meshes_map;
 
-    class ModelCache {
-    private:
-        static ModelCache * s_model_cache;
-
-        map<string, shared_ptr<Model>> _model_map;
-
-        [[nodiscard]] static shared_ptr<Model> load_model(const std::string &path,
+        [[nodiscard]] static std::vector<shared_ptr<Mesh>> load_meshes(const std::string &path,
                                                                        uint subdiv_level);
 
         [[nodiscard]] bool inline is_contain(const std::string &key) const {
-            return _model_map.find(key) != _model_map.end();
+            return _meshes_map.find(key) != _meshes_map.end();
         }
 
         [[nodiscard]] static string cal_key(const string &path, uint subdiv_level) {
@@ -42,10 +34,24 @@ namespace luminous::render {
 
     public:
 
-        [[nodiscard]] static const std::vector<shared_ptr<Mesh>>& get_model(const std::string &path,
+        [[nodiscard]] static const std::vector<shared_ptr<Mesh>>& get_meshes(const std::string &path,
                                                                              uint subdiv_level);
 
-        [[nodiscard]] static ModelCache * instance();
+        [[nodiscard]] static MeshesCache * instance();
 
+    };
+
+    class Model : public Plugin {
+    private:
+        shared_ptr<Material> _material;
+        std::vector<shared_ptr<Mesh>> _meshes;
+    public:
+        Model(Device *device, const ParamSet &params) noexcept
+                : Plugin{device, params},
+                  _material{params["material"].parse_or_null<Material>()} {
+            auto subdiv = params["subdiv"].as_uint(0u);
+            auto path_str = params["path"].as_string("");
+            _meshes = MeshesCache::get_meshes(path_str, subdiv);
+        }
     };
 }
