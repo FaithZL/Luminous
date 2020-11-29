@@ -12,5 +12,11 @@ namespace luminous::render::shape {
     class Instance : public Shape {
     private:
         EntityHandle _entity_handle;
+    public:
+        Instance(Device *device, const ParamSet &params)
+        :Shape(device, params) {
+            auto subdiv = params["subdiv"].as_uint(0u);
+            auto path_str = params["path"].as_string("");
+        }
     };
 }
