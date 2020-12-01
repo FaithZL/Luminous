@@ -47,11 +47,12 @@ namespace luminous::render {
         std::vector<shared_ptr<Mesh>> _meshes;
     public:
         Model(Device *device, const ParamSet &params) noexcept
-                : Plugin{device, params},
-                  _material{params["material"].parse_or_null<Material>()} {
+                : Plugin{device, params}{
             auto subdiv = params["subdiv"].as_uint(0u);
             auto path_str = params["path"].as_string("");
             _meshes = MeshesCache::get_meshes(path_str, subdiv);
         }
+//
+        [[nodiscard]] virtual std::vector<shared_ptr<Shape>> shapes() = 0;
     };
 }

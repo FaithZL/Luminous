@@ -1,1 +1,0 @@
-luminous_render_add_plugin(instance CATEGORY shape SOURCES instance.cpp)

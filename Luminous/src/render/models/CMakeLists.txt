@@ -1,0 +1,1 @@
+luminous_render_add_plugin(model_instance CATEGORY model SOURCES model_instance.cpp)
