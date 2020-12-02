@@ -52,21 +52,21 @@ namespace luminous::render {
     };
 
 
-    class Shape : public Plugin {
+    class Shape {
     protected:
 
-        std::shared_ptr<Material> _material;
-        std::shared_ptr<Transform> _transform;
+        shared_ptr<const Material> _material;
+        shared_ptr<const Transform> _transform;
 
     public:
-        Shape(Device *device, const ParamSet &params) noexcept
-        : Plugin{device, params},
-        _material{params["material"].parse_or_null<Material>()},
-        _transform{params["transform"].parse_or_null<Transform>()} {
+        Shape(const shared_ptr<const Material> material,
+              const shared_ptr<const Transform> transform):
+              _material(material),
+              _transform(transform) {
 
         }
 
-        [[nodiscard]] Transform *transform() const noexcept { return _transform.get(); }
-        [[nodiscard]] Material *material() const noexcept { return _material.get(); }
+        [[nodiscard]] const Transform *transform() const noexcept { return _transform.get(); }
+        [[nodiscard]] const Material *material() const noexcept { return _material.get(); }
     };
 }
