@@ -10,6 +10,7 @@
 
 #include <compute/dsl.h>
 #include <render/plugin.h>
+#include <render/include/param_set.h>
 
 namespace luminous::render {
     

@@ -3,6 +3,7 @@
 //
 
 #include "render/include/transform.h"
+#include "render/include/param_set.h"
 #include "iomanip"
 
 using namespace std;

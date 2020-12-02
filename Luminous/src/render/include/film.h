@@ -6,6 +6,7 @@
 
 #include <compute/pipeline.h>
 #include <render/plugin.h>
+#include <render/include/param_set.h>
 
 namespace luminous::render {
     using compute::TextureView;

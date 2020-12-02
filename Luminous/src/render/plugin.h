@@ -11,16 +11,17 @@
 #include <functional>
 #include <memory>
 #include <iostream>
-#include "render/include/param_set.h"
 
 #include <core/platform.h>
 #include <core/concepts.h>
 #include <core/logging.h>
 #include <core/math/data_types.h>
 #include <compute/device.h>
-#include "render/include/param_set.h"
+//#include "render/include/param_set.h"
 
 namespace luminous::render {
+
+    class ParamSet;
 
 #define LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME(BaseClass)                       \
     class BaseClass;                                                                      \

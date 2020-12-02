@@ -14,8 +14,9 @@ namespace luminous::render::model {
         std::shared_ptr<Transform> _transform;
     public:
         ModelInstance(Device *device, const ParamSet &params)
-        :Model(device, params) {
-            params.parse_or_null<Transform>();
+        :Model(device, params),
+         _transform(params["transform"].parse_or_null<Transform>()){
+            
         }
 
         virtual std::vector<shared_ptr<Shape>> shapes() {

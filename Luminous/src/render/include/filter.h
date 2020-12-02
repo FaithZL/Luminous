@@ -7,6 +7,7 @@
 #include <render/plugin.h>
 #include <compute/dsl.h>
 #include <compute/pipeline.h>
+#include <render/include/param_set.h>
 
 namespace luminous::render {
     struct FilterSample {

@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include "trs.h"
+#include <render/include/param_set.h>
 
 namespace luminous::render::transform {
     struct LinearTRSKeyFrame {

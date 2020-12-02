@@ -52,7 +52,7 @@ namespace luminous::render {
             auto path_str = params["path"].as_string("");
             _meshes = MeshesCache::get_meshes(path_str, subdiv);
         }
-//
+
         [[nodiscard]] virtual std::vector<shared_ptr<Shape>> shapes() = 0;
     };
 }

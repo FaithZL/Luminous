@@ -7,6 +7,7 @@
 #include <compute/dsl_syntax.h>
 #include "core/header.h"
 #include "compute/device.h"
+#include <render/plugin.h>
 
 namespace luminous::render {
     using luminous::compute::Device;
@@ -15,7 +16,7 @@ namespace luminous::render {
         private:
             nloJson _json;
             string _key;
-            const Device * _device;
+            Device * _device;
         private:
 
 
@@ -89,7 +90,7 @@ namespace luminous::render {
             ParamSet() {}
             ParamSet(const nloJson &json,
                      const string &key = "",
-                     const Device *device = nullptr):
+                     Device *device = nullptr):
                     _json(json),
                     _key(key),
                     _device(device) {
@@ -221,6 +222,11 @@ namespace luminous::render {
 #undef LUMINOUS_MAKE_AS_TYPE_MAT3X3
 #undef LUMINOUS_MAKE_AS_TYPE_MAT4X4
         };
+
+    template<typename BaseClass>
+    [[nodiscard]] std::shared_ptr<BaseClass>ParamSet::parse() const {
+        return Plugin::create<BaseClass>(_device, string(_json["subType"]), *this);
+    }
 
 
 }

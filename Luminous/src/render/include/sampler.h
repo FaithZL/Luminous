@@ -8,6 +8,7 @@
 #include <compute/dsl.h>
 #include <core/header.h>
 #include "compute/pipeline.h"
+#include <render/include/param_set.h>
 
 namespace luminous::render {
     using luminous::compute::Device;
