@@ -8,9 +8,8 @@
 #include "core/header.h"
 #include "compute/device.h"
 
-namespace luminous {
+namespace luminous::render {
     using luminous::compute::Device;
-    inline namespace utility {
         using namespace std;
         class ParamSet {
         private:
@@ -222,7 +221,6 @@ namespace luminous {
 #undef LUMINOUS_MAKE_AS_TYPE_MAT3X3
 #undef LUMINOUS_MAKE_AS_TYPE_MAT4X4
         };
-    }
 
 
 }

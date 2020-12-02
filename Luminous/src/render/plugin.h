@@ -11,14 +11,14 @@
 #include <functional>
 #include <memory>
 #include <iostream>
-#include "util/param_set.h"
+#include "render/include/param_set.h"
 
 #include <core/platform.h>
 #include <core/concepts.h>
 #include <core/logging.h>
 #include <core/math/data_types.h>
 #include <compute/device.h>
-#include "util/param_set.h"
+#include "render/include/param_set.h"
 
 namespace luminous::render {
 
@@ -115,7 +115,7 @@ LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME_T(Texture,float4)
 
 #define LUMINOUS_EXPORT_PLUGIN_CREATOR(PluginClass)                                                                                                    \
     extern "C" LUMINOUS_EXPORT ::luminous::render::Plugin *create(::luminous::compute::Device *device,                                                 \
-                                                            const luminous::utility::ParamSet &params) {                                                \
+                                                            const luminous::render::ParamSet &params) {                                                \
         LUMINOUS_INFO("Creating instance of class ", #PluginClass, ", category: ", ::luminous::render::Plugin::plugin_base_class_name<PluginClass>()); \
         return new PluginClass{device, params};                                                                                                        \
     }

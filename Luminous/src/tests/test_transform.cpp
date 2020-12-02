@@ -9,7 +9,7 @@ using namespace std;
 using namespace luminous::compute;
 using namespace luminous::compute::dsl;
 using namespace luminous;
-using luminous::utility::ParamSet;
+using luminous::render::ParamSet;
 using luminous::render::Plugin;
 using luminous::render::Transform;
 
