@@ -18,8 +18,8 @@ namespace luminous::render {
         return s_meshes_cache;
     }
 
-    std::vector<shared_ptr<Mesh>> MeshesCache::load_meshes(const std::string &path, uint subdiv_level) {
-        std::vector<shared_ptr<Mesh>> meshes;
+    std::vector<shared_ptr<const Mesh>> MeshesCache::load_meshes(const std::string &path, uint subdiv_level) {
+        std::vector<shared_ptr<const Mesh>> meshes;
         Assimp::Importer ai_importer;
         ai_importer.SetPropertyInteger(AI_CONFIG_PP_RVC_FLAGS,
                                        aiComponent_COLORS |
@@ -104,7 +104,7 @@ namespace luminous::render {
         return move(meshes);
     }
 
-    const std::vector<shared_ptr<Mesh>>& MeshesCache::get_meshes(const std::string &path, uint subdiv_level) {
+    const std::vector<shared_ptr<const Mesh>>& MeshesCache::get_meshes(const std::string &path, uint subdiv_level) {
         auto self = instance();
         auto key = self->cal_key(path, subdiv_level);
         if (!self->is_contain(key)) {

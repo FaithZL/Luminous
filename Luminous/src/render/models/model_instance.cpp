@@ -20,7 +20,12 @@ namespace luminous::render::model {
         }
 
         virtual std::vector<shared_ptr<Shape>> shapes() {
-
+            std::vector<shared_ptr<Shape>> ret;
+            for (auto i = 0u; i < _meshes.size(); ++i) {
+                auto shape = make_shared<Shape>(_material, _transform, _meshes[i]);
+                ret.push_back(shape);
+            }
+            return ret;
         }
     };
 }

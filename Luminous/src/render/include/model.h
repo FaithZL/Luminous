@@ -19,9 +19,9 @@ namespace luminous::render {
     private:
         static MeshesCache * s_meshes_cache;
 
-        map<string, std::vector<shared_ptr<Mesh>>> _meshes_map;
+        map<string, std::vector<shared_ptr<const Mesh>>> _meshes_map;
 
-        [[nodiscard]] static std::vector<shared_ptr<Mesh>> load_meshes(const std::string &path,
+        [[nodiscard]] static std::vector<shared_ptr<const Mesh>> load_meshes(const std::string &path,
                                                                        uint subdiv_level);
 
         [[nodiscard]] bool inline is_contain(const std::string &key) const {
@@ -34,7 +34,7 @@ namespace luminous::render {
 
     public:
 
-        [[nodiscard]] static const std::vector<shared_ptr<Mesh>>& get_meshes(const std::string &path,
+        [[nodiscard]] static const std::vector<shared_ptr<const Mesh>>& get_meshes(const std::string &path,
                                                                              uint subdiv_level);
 
         [[nodiscard]] static MeshesCache * instance();
@@ -42,9 +42,9 @@ namespace luminous::render {
     };
 
     class Model : public Plugin {
-    private:
+    protected:
         shared_ptr<Material> _material;
-        std::vector<shared_ptr<Mesh>> _meshes;
+        std::vector<shared_ptr<const Mesh>> _meshes;
     public:
         Model(Device *device, const ParamSet &params) noexcept
                 : Plugin{device, params}{

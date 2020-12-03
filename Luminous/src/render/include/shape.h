@@ -57,16 +57,20 @@ namespace luminous::render {
 
         shared_ptr<const Material> _material;
         shared_ptr<const Transform> _transform;
+        shared_ptr<const Mesh> _mesh;
 
     public:
         Shape(const shared_ptr<const Material> material,
-              const shared_ptr<const Transform> transform):
+              const shared_ptr<const Transform> transform,
+              const shared_ptr<const Mesh> mesh):
               _material(material),
-              _transform(transform) {
+              _transform(transform),
+              _mesh(mesh) {
 
         }
 
         [[nodiscard]] const Transform *transform() const noexcept { return _transform.get(); }
         [[nodiscard]] const Material *material() const noexcept { return _material.get(); }
+        [[nodiscard]] const Mesh *mesh() const noexcept { return _mesh.get(); }
     };
 }

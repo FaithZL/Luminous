@@ -18,7 +18,7 @@ namespace luminous::render {
         map<string, shared_ptr<Material>> _material_map;
     public:
         static MaterialCache * instance();
-        
+
     };
 
     class Material : public Plugin {
