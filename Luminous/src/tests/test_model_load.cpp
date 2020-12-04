@@ -15,8 +15,8 @@ using namespace luminous::compute::dsl;
 using luminous::render::MeshesCache;
 
 int main(int argc, char *argv[]) {
-//    Context context{argc, argv};
-//    auto device = Device::create(&context);
-//    auto meshes = MeshesCache::get_meshes("/Users/zero/work/graphic/renderer/Luminous/Luminous/res/models/teapot.obj", 0);
+    Context context{argc, argv};
+    auto device = Device::create(&context);
+    auto meshes = MeshesCache::get_meshes("/Users/zero/work/graphic/renderer/Luminous/Luminous/res/models/teapot.obj", 0);
     return 0;
 }

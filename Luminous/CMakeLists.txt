@@ -39,17 +39,17 @@ add_subdirectory(thirdparty/cxxopts)
 add_library(cxxopts_config INTERFACE)
 target_link_libraries(cxxopts_config INTERFACE cxxopts::cxxopts)
 
-add_subdirectory(thirdparty/mimalloc)
-set_target_properties(mimalloc PROPERTIES
-        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/bin/"
-        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/bin/"
-        WINDOWS_EXPORT_ALL_SYMBOLS ON)
-add_library(mimalloc_config INTERFACE)
-target_link_libraries(mimalloc_config INTERFACE mimalloc)
+#add_subdirectory(thirdparty/mimalloc)
+#set_target_properties(mimalloc PROPERTIES
+#        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/bin/"
+#        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/$<CONFIG>/bin/"
+#        WINDOWS_EXPORT_ALL_SYMBOLS ON)
+#add_library(mimalloc_config INTERFACE)
+#target_link_libraries(mimalloc_config INTERFACE mimalloc)
 
 add_subdirectory(thirdparty/assimp)
 add_library(assimp_config INTERFACE)
-target_link_libraries(assimp_config INTERFACE assimp::assimp mimalloc_config)
+target_link_libraries(assimp_config INTERFACE assimp::assimp)
 
 set(CMAKE_DEBUG_POSTFIX "")
 
