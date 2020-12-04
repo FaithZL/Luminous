@@ -15,7 +15,7 @@ namespace luminous::render {
     class MaterialCache {
     private:
         static MaterialCache * s_material_cache;
-        map<string, shared_ptr<Material>> _material_map;
+        std::map<std::string, std::shared_ptr<Material>> _material_map;
     public:
         static MaterialCache * instance();
 
