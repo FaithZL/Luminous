@@ -7,6 +7,3 @@
 [submodule "Luminous/thirdparty/spdlog"]
 	path = Luminous/thirdparty/spdlog
 	url = https://github.com/gabime/spdlog.git
-[submodule "Luminous/thirdparty/mimalloc"]
-	path = Luminous/thirdparty/mimalloc
-	url = https://github.com/microsoft/mimalloc.git
