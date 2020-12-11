@@ -22,3 +22,5 @@ namespace luminous::render::filter {
 
     };
 }
+
+LUMINOUS_EXPORT_PLUGIN_CREATOR(luminous::render::filter::GaussianFilter)
