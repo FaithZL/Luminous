@@ -17,7 +17,6 @@
 #include <core/logging.h>
 #include <core/math/data_types.h>
 #include <compute/device.h>
-//#include "render/include/param_set.h"
 
 namespace luminous::render {
 
@@ -58,6 +57,7 @@ LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME(Material)
 LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME(Integrator)
 LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME(Sampler)
 LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME(Light)
+LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME(Task)
 
 LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME_T(Texture,float)
 LUMINOUS_MAKE_PLUGIN_BASE_CLASS_MATCHER_AND_NAME_T(Texture,float3)
