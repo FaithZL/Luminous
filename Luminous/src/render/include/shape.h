@@ -58,6 +58,7 @@ namespace luminous::render {
         shared_ptr<const Material> _material;
         shared_ptr<const Transform> _transform;
         shared_ptr<const Mesh> _mesh;
+        float _surface_area;
 
     public:
         Shape(const shared_ptr<const Material> material,
@@ -72,5 +73,6 @@ namespace luminous::render {
         [[nodiscard]] const Transform *transform() const noexcept { return _transform.get(); }
         [[nodiscard]] const Material *material() const noexcept { return _material.get(); }
         [[nodiscard]] const Mesh *mesh() const noexcept { return _mesh.get(); }
+        [[nodiscard]] float surface_area() const noexcept { return _surface_area; }
     };
 }

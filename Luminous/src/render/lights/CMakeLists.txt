@@ -1,0 +1,1 @@
+luminous_render_add_plugin(diffuse CATEGORY lights SOURCES diffuse.cpp)
