@@ -89,8 +89,8 @@ namespace luminous::render {
         public:
             ParamSet() {}
             ParamSet(const nloJson &json,
-                     const string &key = "",
-                     Device *device = nullptr):
+                     Device *device = nullptr,
+                     const string &key = ""):
                     _json(json),
                     _key(key),
                     _device(device) {
@@ -101,19 +101,19 @@ namespace luminous::render {
             nloJson json() const { return _json; }
 
             [[nodiscard]] ParamSet get(const std::string &key) const {
-                return ParamSet(_json[key], key, _device);
+                return ParamSet(_json[key], _device, key);
             }
 
             [[nodiscard]] ParamSet at(uint idx) const {
-                return ParamSet(_json.at(idx), "", _device);
+                return ParamSet(_json.at(idx), _device);
             }
 
             [[nodiscard]] ParamSet operator[](const std::string &key) const {
-                return ParamSet(_json[key], key, _device);
+                return ParamSet(_json[key], _device, key);
             }
 
             [[nodiscard]] ParamSet operator[](uint i) const {
-                return ParamSet(_json[i], "", _device);
+                return ParamSet(_json[i], _device);
             }
 
 #define LUMINOUS_MAKE_AS_TYPE_SCALAR(type) [[nodiscard]] type as_##type(type val = 0) const {                   \

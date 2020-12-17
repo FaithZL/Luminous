@@ -21,7 +21,8 @@ namespace luminous::render {
     public:
 
         Light(Device *device, const ParamSet &params) noexcept
-                : Plugin{device, params} {
+                : Plugin{device, params},
+                _o2w(params["o2w"].parse<Transform>()){
 
         }
 
